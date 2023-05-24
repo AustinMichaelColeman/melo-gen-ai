@@ -1,0 +1,79 @@
+openapi: 3.0.1
+info:
+  title: Playlist Plugin
+  description: A plugin that allows users to create playlists by providing a title and a list of songs.
+  version: v1
+servers:
+  - url: http://localhost:3000
+paths:
+  /playlist/{username}:
+    post:
+      operationId: createPlaylist
+      summary: Create a playlist
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+          description: The name of the user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createPlaylistRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/createPlaylistResponse"
+
+components:
+  schemas:
+    createPlaylistRequest:
+      type: object
+      required:
+        - title
+        - songs
+      properties:
+        title:
+          type: string
+          description: The title of the playlist.
+        songs:
+          type: array
+          items:
+            $ref: "#/components/schemas/song"
+          description: The list of songs in the playlist.
+
+    createPlaylistResponse:
+      type: object
+      properties:
+        playlist:
+          $ref: "#/components/schemas/playlist"
+          description: The generated playlist information.
+
+    song:
+      type: object
+      required:
+        - title
+        - artist
+      properties:
+        title:
+          type: string
+          description: The title of the song.
+        artist:
+          type: string
+          description: The artist of the song.
+
+    playlist:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The title of the playlist.
+        playlistUrl:
+          type: string
+          description: The URL of the generated playlist.

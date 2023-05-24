@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "AI Playlist for YouTube Music™",
+  "name_for_model": "AI Playlist for YouTube Music™",
+  "description_for_human": "Plugin for generating a YouTube Music playlist.",
+  "description_for_model": "Plugin for generating a YouTube Music playlist.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "http://localhost:3000/openapi.yaml",
+    "is_user_authenticated": false
+  },
+  "logo_url": "http://localhost:3000/logo.png",
+  "contact_email": "contact@example.com",
+  "legal_info_url": "http://localhost:3000/legal"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "smart-playlist-generator",
+  "version": "1.0.0",
+  "description": "A ChatGPT plugin for generating playlists for YouTube Music™",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "author": "Austin Coleman",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  }
+}
