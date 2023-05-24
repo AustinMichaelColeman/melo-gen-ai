@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: Playlist Plugin
-  description: A plugin that allows users to create playlists by providing a title and a list of songs.
+  title: Smart Playlist Generator Plugin
+  description: A plugin that allows users to create YouTube Music playlists by providing a playlist title and a list of songs.
   version: v1
 servers:
   - url: http://localhost:3000
@@ -30,6 +30,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/createPlaylistResponse"
+        "500":
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/createPlaylistErrorResponse"
 
 components:
   schemas:
@@ -51,29 +57,55 @@ components:
     createPlaylistResponse:
       type: object
       properties:
-        playlist:
-          $ref: "#/components/schemas/playlist"
-          description: The generated playlist information.
+        message:
+          type: string
+          description: A message about the status of the playlist creation.
+        playlist_id:
+          type: string
+          description: The ID of the generated playlist.
+        playlistUrl:
+          type: string
+          description: The URL of the generated playlist.
+        songs_entered:
+          type: array
+          items:
+            $ref: "#/components/schemas/songWithId"
+          description: The list of songs successfully added to the playlist.
+        failed_songs:
+          type: array
+          items:
+            $ref: "#/components/schemas/songWithId"
+          description: The list of songs that failed to be added to the playlist.
+
+    createPlaylistErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: A message about the error that occurred.
+        failed_songs:
+          type: array
+          items:
+            $ref: "#/components/schemas/songWithId"
+          description: The list of songs that failed to be added to the playlist.
 
     song:
       type: object
       required:
         - title
-        - artist
       properties:
         title:
           type: string
           description: The title of the song.
-        artist:
-          type: string
-          description: The artist of the song.
 
-    playlist:
+    songWithId:
       type: object
+      required:
+        - title
       properties:
+        id:
+          type: string
+          description: The ID of the song.
         title:
           type: string
-          description: The title of the playlist.
-        playlistUrl:
-          type: string
-          description: The URL of the generated playlist.
+          description: The title of the song.

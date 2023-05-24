@@ -6,6 +6,24 @@ const bodyParser = require("body-parser");
 const PORT = 3000;
 
 const app = express();
+
+/*
+Right now the YouTube API is mocked. I plan to use actual tests to mock
+the API but this was just how I got started.
+
+Here's an example curl I'm using to test it:
+
+curl --location 'http://localhost:3000/playlist/:username' \
+--header 'Content-Type: application/json' \
+--data '{
+    "title": "Test",
+    "songs": ["Musician by Porter Robinson", "ENERGY by Disclosure", "Look at the Sky by Porter Robinson"]
+}'
+
+I have some hardcoded YouTube URLs too.
+
+*/
+
 app.use(
   cors({
     origin: "https://chat.openai.com",
@@ -13,50 +31,111 @@ app.use(
 );
 app.use(bodyParser.json());
 
-app.post("/playlist/:username", (req, res) => {
+app.post("/playlist/:username", async (req, res) => {
   const { title, songs } = req.body;
   const username = req.params.username;
 
   // Generate a playlist based on the provided title and song names
-  const playlist = generatePlaylist(title, songs);
+  const { code, ...playlist } = await generatePlaylist(title, songs);
+  console.log("playlist", playlist);
 
-  // Return the generated playlist
-  res.status(200).json({ playlist });
+  res.status(code).json({ playlist });
 });
 
-function generatePlaylist(title, songs) {
-  const playlist_prefix = "https://music.youtube.com/browse/VL";
+async function generatePlaylist(title, songs) {
+  const { songs_with_ids, failed_songs } = await addSongIdsTo(songs);
 
-  const playlist_id = createPlaylist(title);
+  const { playlist_id, error } = await createPlaylist(title);
 
-  for (song of songs) {
-    insertSong(song, playlist_id);
+  if (error) {
+    return { code: 500, error, failed_songs };
   }
 
+  const { songs_entered, songs_failed } = await insertSongsIntoPlaylist(
+    songs_with_ids,
+    playlist_id
+  );
+
+  if (songs_entered.length == 0) {
+    return {
+      code: 500,
+      message: "Error: No songs were added to the playlist",
+      failed_songs: [...failed_songs, ...songs_failed],
+    };
+  }
+
+  const playlist_prefix = "https://music.youtube.com/browse/VL";
   const playlistUrl = `${playlist_prefix}${playlist_id}`;
   return {
-    title,
+    code: 200,
+    message: "Playlist created successfully",
+    playlist_id,
     playlistUrl,
+    songs_entered,
+    failed_songs: [...failed_songs, ...songs_failed],
   };
 }
+async function addSongIdsTo(songs) {
+  const failed_songs = [];
+  const songs_with_ids = [];
+  for (const song of songs) {
+    try {
+      song_id = await getSongID(song);
+      songs_with_ids.push({
+        id: song_id,
+        title: song,
+      });
+    } catch (e) {
+      console.log("Error getting song id for", song);
+      failed_songs.push({
+        id: null,
+        title: song,
+      });
+    }
+  }
+  return { songs_with_ids, failed_songs };
+}
 
-function createPlaylist(title) {
+async function createPlaylist(title) {
   console.log("created playlist", title);
-  return "PLHue5YJSxY0g9gtEbaV6DhOuGrMhLz4IE";
+  return { playlist_id: "PLHue5YJSxY0g9gtEbaV6DhOuGrMhLz4IE" };
 }
 
-function insertSong(song, playlist_id) {
-  console.log("insertSong", song);
-  const songID = getSongID(song);
-  console.log("inserted", songID, "into playlist", playlist_id);
-  return true;
+async function insertSongsIntoPlaylist(songs_with_ids, playlist_id) {
+  const songs_entered = [];
+  const songs_failed = [];
+  for (const song_with_id of songs_with_ids) {
+    try {
+      const song = await insertSong(song_with_id, playlist_id);
+      songs_entered.push(song);
+    } catch (e) {
+      songs_failed.push(song_with_id);
+    }
+  }
+  return { songs_entered, songs_failed };
 }
 
-function getSongID(song) {
-  console.log("getSongID", song);
-  const { title, artist } = song;
-  const songID = `ID-${title}`;
-  console.log(`searched for ${title} by ${artist} and got ID`, songID);
+function insertSong(song_with_id, playlist_id) {
+  const { id, title } = song_with_id;
+  // Mocking YouTube API
+  if (title === "ENERGY by Disclosure") {
+    throw Error("Failed to insert song into playlist");
+  }
+  console.log("inserted", id, "into playlist", playlist_id);
+  return song_with_id;
+}
+
+async function getSongID(song) {
+  // Mocking YouTube API
+  let songID = "";
+  if (song === "Musician by Porter Robinson") {
+    songID = "q-74HTjRbuY";
+  } else if (song === "ENERGY by Disclosure") {
+    songID = "nwO6hyeNGlE";
+  } else {
+    throw Error("Error getting song ID");
+  }
+  console.log(`searched for ${song} got ID`, songID);
   return songID;
 }
 

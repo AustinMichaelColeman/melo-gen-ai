@@ -1,7 +1,7 @@
 {
   "schema_version": "v1",
   "name_for_human": "AI Playlist for YouTube Music",
-  "name_for_model": "AI Playlist for YouTube Music",
+  "name_for_model": "AI_Playlist_for_YouTube_Music",
   "description_for_human": "Plugin for generating a YouTube Music playlist.",
   "description_for_model": "Plugin for generating a YouTube Music playlist.",
   "auth": {
