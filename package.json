@@ -6,6 +6,7 @@
   "scripts": {
     "start": "vercel dev"
   },
+  "type": "module",
   "author": "Austin Coleman",
   "license": "MIT",
   "devDependencies": {
