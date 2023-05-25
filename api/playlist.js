@@ -1,4 +1,4 @@
-import YouTubeService from "../src/services/YouTubeService";
+import { YouTubeService } from "./_services/YouTubeService.js";
 
 export default async function playlist(req, res) {
   const { title, songs } = req.body;

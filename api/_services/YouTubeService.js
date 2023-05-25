@@ -1,7 +1,6 @@
-// src/services/YouTubeService.js
 import { google } from "googleapis";
 
-export default class YouTubeService {
+export class YouTubeService {
   constructor(accessToken) {
     const oauth2Client = new google.auth.OAuth2();
     oauth2Client.setCredentials({ access_token: accessToken });
