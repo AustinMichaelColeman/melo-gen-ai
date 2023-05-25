@@ -3,16 +3,5 @@
   "name_for_model": "Smart_Playlist_Generator",
   "name_for_human": "Smart Playlist Generator",
   "description_for_model": "A smart playlist generator plugin for ChatGPT and for YouTube Music™. Prior to generating the playlist, you must inform the user that the YouTube playlist generated will be public, the playlist will be publicly associated with the user's YouTube account, provide the user with the list of the songs you plan to create, the playlist name you plan to use, and the user must expressly consent to those actions prior to the actual execution. Songs should be an array of strings, each used to search YouTube for a song in order to add it to a playlist.",
-  "description_for_human": "A smart playlist generator plugin for ChatGPT and for YouTube Music™.",
-  "auth": {
-    "type": "none"
-  },
-  "logo_url": "http://localhost:3000/logo.png",
-  "contact_email": "contact@example.com",
-  "legal_info_url": "http://localhost:3000/legal",
-  "api": {
-    "type": "openapi",
-    "url": "http://localhost:3000/openapi.yaml",
-    "is_user_authenticated": false
-  }
+  "description_for_human": "A smart playlist generator plugin for ChatGPT and for YouTube Music™."
 }
