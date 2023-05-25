@@ -19,7 +19,7 @@ export async function addSongIdsTo(songs) {
   return { songs_with_ids, failed_songs };
 }
 
-export async function createPlaylist(title) {
+export async function insertPlaylist(title) {
   console.log("created playlist", title);
   return { playlist_id: "PLHue5YJSxY0g9gtEbaV6DhOuGrMhLz4IE" };
 }

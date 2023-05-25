@@ -1,26 +1,26 @@
 import {
   addSongIdsTo,
-  createPlaylist,
+  insertPlaylist,
   insertSongsIntoPlaylist,
-} from "../helpers/youtubeApiHelper.js";
+} from "../src/services/youtubeAPI.js";
 
-export const handlePlaylistCreation = async (req, res) => {
+export default async function generatePlaylist(req, res) {
   const { title, songs } = req.body;
   console.log("title", title);
   console.log("songs", songs);
   const username = req.params.username;
   console.log("username", username);
 
-  const { code, ...playlist } = await generatePlaylist(title, songs);
+  const { code, ...playlist } = await createPlaylist(title, songs);
   console.log("playlist", playlist);
 
   res.status(code).json({ playlist });
-};
+}
 
-export async function generatePlaylist(title, songs) {
+async function createPlaylist(title, songs) {
   const { songs_with_ids, failed_songs } = await addSongIdsTo(songs);
 
-  const { playlist_id, error } = await createPlaylist(title);
+  const { playlist_id, error } = await insertPlaylist(title);
 
   if (error) {
     return { code: 500, error, failed_songs };
