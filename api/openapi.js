@@ -1,10 +1,11 @@
+const openapi = `
 openapi: 3.0.1
 info:
   title: Smart Playlist Generator Plugin
   description: A plugin that allows users to create YouTube Music playlists by providing a playlist title and a list of songs.
   version: v1
 servers:
-  - url: http://localhost:3000
+  - url: ${process.env.SERVER_URL}
 paths:
   /playlist/{username}:
     post:
@@ -101,3 +102,9 @@ components:
         title:
           type: string
           description: The title of the song.
+`;
+
+export default async function openapi(req, res) {
+  res.setHeader("Content-Type", "text/yaml");
+  res.send(openapi);
+}
