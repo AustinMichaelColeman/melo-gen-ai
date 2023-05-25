@@ -33,7 +33,10 @@ app.use(bodyParser.json());
 
 app.post("/playlist/:username", async (req, res) => {
   const { title, songs } = req.body;
+  console.log("title", title);
+  console.log("songs", songs);
   const username = req.params.username;
+  console.log("username", username);
 
   // Generate a playlist based on the provided title and song names
   const { code, ...playlist } = await generatePlaylist(title, songs);
@@ -80,13 +83,13 @@ async function addSongIdsTo(songs) {
   const songs_with_ids = [];
   for (const song of songs) {
     try {
-      song_id = await getSongID(song);
+      const song_id = await getSongID(song);
       songs_with_ids.push({
         id: song_id,
         title: song,
       });
     } catch (e) {
-      console.log("Error getting song id for", song);
+      console.log("Error getting song id for", song, "Error:", e);
       failed_songs.push({
         id: null,
         title: song,
@@ -109,6 +112,7 @@ async function insertSongsIntoPlaylist(songs_with_ids, playlist_id) {
       const song = await insertSong(song_with_id, playlist_id);
       songs_entered.push(song);
     } catch (e) {
+      console.log("failed to insert song", song, "Error:", e);
       songs_failed.push(song_with_id);
     }
   }
