@@ -9,7 +9,7 @@
       "destination": "/api/openapi.js"
     },
     {
-      "source": "/api/playlist/:username",
+      "source": "/api/playlist",
       "destination": "/api/playlist.js"
     }
   ],

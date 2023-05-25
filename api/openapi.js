@@ -8,17 +8,10 @@ info:
 servers:
   - url: ${process.env.SERVER_URL}
 paths:
-  /playlist/{username}:
+  /playlist:
     post:
       operationId: createPlaylist
       summary: Create a playlist
-      parameters:
-        - in: path
-          name: username
-          schema:
-            type: string
-          required: true
-          description: The name of the user.
       requestBody:
         required: true
         content:

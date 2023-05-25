@@ -1,31 +1,39 @@
-import {
-  addSongIdsTo,
-  insertPlaylist,
-  insertSongsIntoPlaylist,
-} from "../src/services/youtubeAPI.js";
+import YouTubeService from "../src/services/YouTubeService";
 
 export default async function playlist(req, res) {
   const { title, songs } = req.body;
-  // const username = req.query.username;
+  const authHeader = req.headers.authorization;
+  const accessToken = authHeader && authHeader.split(" ")[1];
+  if (!accessToken) {
+    res.status(401).json({ error: "Access token is required" });
+    return;
+  }
 
-  const { code, ...createdPlaylist } = await createPlaylist(title, songs);
+  const youTubeService = new YouTubeService(accessToken);
+  const { code, ...createdPlaylist } = await createPlaylist(
+    youTubeService,
+    title,
+    songs
+  );
 
   res.status(code).json(createdPlaylist);
 }
 
-async function createPlaylist(title, songs) {
-  const { songs_with_ids, failed_songs } = await addSongIdsTo(songs);
+async function createPlaylist(youtubeService, title, songs) {
+  const { songs_with_ids, failed_songs } = await youtubeService.addSongIdsTo(
+    songs
+  );
 
-  const { playlist_id, error } = await insertPlaylist(title);
-
-  if (error) {
-    return { code: 500, error, failed_songs };
+  let playlist_id;
+  try {
+    const response = await youtubeService.insertPlaylist(title);
+    playlist_id = response.playlist_id;
+  } catch (error) {
+    return { code: 500, error: error.message, failed_songs };
   }
 
-  const { songs_entered, songs_failed } = await insertSongsIntoPlaylist(
-    songs_with_ids,
-    playlist_id
-  );
+  const { songs_entered, songs_failed } =
+    await youtubeService.insertSongsIntoPlaylist(songs_with_ids, playlist_id);
 
   if (songs_entered.length == 0) {
     return {
