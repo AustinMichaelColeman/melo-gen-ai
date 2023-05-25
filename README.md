@@ -1,6 +1,6 @@
 # smart-playlist-generator
 
-A ChatGPT plugin for generating playlists for YouTube Music™
+A smart playlist generator plugin for ChatGPT and for YouTube Music™
 
 ## Getting started
 
@@ -17,6 +17,8 @@ See the [ChatGPT Plugins Documentation](https://platform.openai.com/docs/plugins
 
 Once it's published, I'll add a link here. Or you'll have to search for "Smart Playlist Generator"
 
-## Use of Trademark
+## Use of Trademarks
 
-YouTube Music™ is a trademark of Google Inc. Use of this trademark is subject to Google Permissions.
+YouTube Music™ is a trademark of Google Inc. Use of this trademark is subject to [Google Permissions](https://about.google/brand-resource-center/).
+
+ChatGPT is a trademark of OpenAI. Use of this trademark is subject to [OpenAI Brand guidelines](https://openai.com/brand).
