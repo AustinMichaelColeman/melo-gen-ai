@@ -35,7 +35,6 @@ export default async function aiPlugin(req, res) {
     };
     res.json(config);
   } catch (err) {
-    console.error(err);
     res.status(500).send("Configuration error");
   }
 }

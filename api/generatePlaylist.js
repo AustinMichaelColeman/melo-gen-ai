@@ -6,13 +6,9 @@ import {
 
 export default async function generatePlaylist(req, res) {
   const { title, songs } = req.body;
-  console.log("title", title);
-  console.log("songs", songs);
   const username = req.params.username;
-  console.log("username", username);
 
   const { code, ...playlist } = await createPlaylist(title, songs);
-  console.log("playlist", playlist);
 
   res.status(code).json({ playlist });
 }

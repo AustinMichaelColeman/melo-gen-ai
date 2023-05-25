@@ -9,7 +9,6 @@ export async function addSongIdsTo(songs) {
         title: song,
       });
     } catch (e) {
-      console.log("Error getting song id for", song, "Error:", e);
       failed_songs.push({
         id: null,
         title: song,
@@ -20,7 +19,6 @@ export async function addSongIdsTo(songs) {
 }
 
 export async function insertPlaylist(title) {
-  console.log("created playlist", title);
   return { playlist_id: "PLHue5YJSxY0g9gtEbaV6DhOuGrMhLz4IE" };
 }
 
@@ -32,7 +30,6 @@ export async function insertSongsIntoPlaylist(songs_with_ids, playlist_id) {
       const song = await insertSong(song_with_id, playlist_id);
       songs_entered.push(song);
     } catch (e) {
-      console.log("failed to insert song", song_with_id, "Error:", e);
       songs_failed.push(song_with_id);
     }
   }
@@ -45,7 +42,6 @@ function insertSong(song_with_id, playlist_id) {
   if (title === "ENERGY by Disclosure") {
     throw Error("Failed to insert song into playlist");
   }
-  console.log("inserted", id, "into playlist", playlist_id);
   return song_with_id;
 }
 
@@ -59,6 +55,6 @@ async function getSongID(song) {
   } else {
     throw Error("Error getting song ID");
   }
-  console.log(`searched for ${song} got ID`, songID);
+
   return songID;
 }
