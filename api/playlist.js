@@ -4,13 +4,13 @@ import {
   insertSongsIntoPlaylist,
 } from "../src/services/youtubeAPI.js";
 
-export default async function generatePlaylist(req, res) {
+export default async function playlist(req, res) {
   const { title, songs } = req.body;
   const username = req.params.username;
 
-  const { code, ...playlist } = await createPlaylist(title, songs);
+  const { code, ...createdPlaylist } = await createPlaylist(title, songs);
 
-  res.status(code).json({ playlist });
+  res.status(code).json(createdPlaylist);
 }
 
 async function createPlaylist(title, songs) {
