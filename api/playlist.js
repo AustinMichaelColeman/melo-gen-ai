@@ -6,7 +6,7 @@ import {
 
 export default async function playlist(req, res) {
   const { title, songs } = req.body;
-  const username = req.params.username;
+  // const username = req.query.username;
 
   const { code, ...createdPlaylist } = await createPlaylist(title, songs);
 
