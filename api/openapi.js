@@ -10,14 +10,14 @@ servers:
 paths:
   /playlist:
     post:
-      operationId: createPlaylist
+      operationId: playlist
       summary: Create a playlist
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/createPlaylistRequest"
+              $ref: "#/components/schemas/playlistRequest"
       responses:
         "200":
           description: OK
@@ -34,7 +34,7 @@ paths:
 
 components:
   schemas:
-    createPlaylistRequest:
+    playlistRequest:
       type: object
       required:
         - title
