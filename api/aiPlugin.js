@@ -15,7 +15,6 @@ export default async function aiPlugin(req, res) {
         },
       };
     }
-
     const config = {
       schema_version: "v1",
       name_for_model: "Smart_Playlist_Generator",
