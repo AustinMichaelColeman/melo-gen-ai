@@ -1,4 +1,4 @@
-const openapi = `
+const openapiYaml = `
 openapi: 3.0.1
 info:
   title: Smart Playlist Generator Plugin
@@ -106,5 +106,5 @@ components:
 
 export default async function openapi(req, res) {
   res.setHeader("Content-Type", "text/yaml");
-  res.send(openapi);
+  res.send(openapiYaml);
 }
