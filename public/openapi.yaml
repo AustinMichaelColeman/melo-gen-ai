@@ -76,7 +76,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/songWithId"
-          description: The list of songs that failed to be added to the playlist.
+          description: The list of songs that failed to be added to the playlist. If a song has a null ID that means searching for the song failed. If a song has an ID, that means inserting it into the playlist failed.
 
     createPlaylistErrorResponse:
       type: object
