@@ -7,6 +7,10 @@
     {
       "source": "/openapi.yaml",
       "destination": "/api/openapi.js"
+    },
+    {
+      "source": "/api/playlist/:username",
+      "destination": "/api/playlist.js"
     }
   ]
 }
