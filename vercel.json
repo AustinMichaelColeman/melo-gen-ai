@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/.well-known/ai-plugin.json",
-      "destination": "/api/ai-plugin"
+      "destination": "/api/aiPlugin"
     }
   ]
 }
