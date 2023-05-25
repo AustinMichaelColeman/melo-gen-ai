@@ -2,6 +2,8 @@
 
 A smart playlist generator plugin for ChatGPT and for YouTube Music™
 
+Deployed using Vercel.
+
 ## Getting started
 
 Run the server locally:
