@@ -1,4 +1,4 @@
-export default async function aiPlugin(req, res) {
+export default async function aiplugin(req, res) {
   try {
     let auth = {
       type: "none",
