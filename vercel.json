@@ -3,6 +3,10 @@
     {
       "source": "/.well-known/ai-plugin.json",
       "destination": "/api/aiPlugin"
+    },
+    {
+      "source": "/openapi.yaml",
+      "destination": "/api/openapi.js"
     }
   ]
 }
