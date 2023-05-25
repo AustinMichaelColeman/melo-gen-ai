@@ -1,18 +1,18 @@
 {
   "schema_version": "v1",
-  "name_for_human": "AI Playlist for YouTube Music",
-  "name_for_model": "AI_Playlist_for_YouTube_Music",
-  "description_for_human": "Plugin for generating a YouTube Music playlist.",
-  "description_for_model": "Plugin for generating a YouTube Music playlist.",
+  "name_for_model": "Smart_Playlist_Generator",
+  "name_for_human": "Smart Playlist Generator",
+  "description_for_model": "A smart playlist generator plugin for ChatGPT and for YouTube Music™. Songs should be an array of strings, each used to search YouTube for a song in order to add it to a playlist.",
+  "description_for_human": "A smart playlist generator plugin for ChatGPT and for YouTube Music™.",
   "auth": {
     "type": "none"
   },
+  "logo_url": "http://localhost:3000/logo.png",
+  "contact_email": "contact@example.com",
+  "legal_info_url": "http://localhost:3000/legal",
   "api": {
     "type": "openapi",
     "url": "http://localhost:3000/openapi.yaml",
     "is_user_authenticated": false
-  },
-  "logo_url": "http://localhost:3000/logo.png",
-  "contact_email": "contact@example.com",
-  "legal_info_url": "http://localhost:3000/legal"
+  }
 }

@@ -47,11 +47,12 @@ components:
       properties:
         title:
           type: string
-          description: The title of the playlist.
+          description: The title of the playlist. If the user doesn't specify a title, make up a title that makes sense given the content of the playlist.
         songs:
           type: array
           items:
-            $ref: "#/components/schemas/song"
+            type: string
+            description: A search string representing a song to search for on YouTube Music
           description: The list of songs in the playlist.
 
     createPlaylistResponse:
@@ -88,15 +89,6 @@ components:
           items:
             $ref: "#/components/schemas/songWithId"
           description: The list of songs that failed to be added to the playlist.
-
-    song:
-      type: object
-      required:
-        - title
-      properties:
-        title:
-          type: string
-          description: The title of the song.
 
     songWithId:
       type: object
