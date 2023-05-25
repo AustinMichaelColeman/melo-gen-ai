@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A ChatGPT plugin for generating playlists for YouTube Music™",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon server.js"
   },

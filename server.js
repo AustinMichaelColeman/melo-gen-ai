@@ -1,7 +1,7 @@
-const express = require("express");
-const cors = require("cors");
-const fs = require("fs");
-const bodyParser = require("body-parser");
+import express from "express";
+import cors from "cors";
+import fs from "fs";
+import bodyParser from "body-parser";
 
 const PORT = 3000;
 
