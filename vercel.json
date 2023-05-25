@@ -11,6 +11,10 @@
     {
       "source": "/api/playlist",
       "destination": "/api/playlist.js"
+    },
+    {
+      "source": "/logo.png",
+      "destination": "android-chrome-512x512.png"
     }
   ],
   "headers": [
