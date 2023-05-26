@@ -1,11 +1,25 @@
 import { YouTubeService } from "../services/YouTubeService.js";
 
 export default async function playlist(req, res) {
-  const { title, searchQueries } = req.body;
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     console.error("Authorization header is required");
     res.status(401).json({ error: "Authorization header is required" });
+    return;
+  }
+
+  const { title, searchQueries } = req.body;
+  if (
+    !title ||
+    !searchQueries ||
+    (Array.isArray(searchQueries) && searchQueries.length === 0)
+  ) {
+    console.error(
+      "Title and at least one search query are required in the request body"
+    );
+    res
+      .status(400)
+      .json({ error: "Title and at least one search query are required" });
     return;
   }
 

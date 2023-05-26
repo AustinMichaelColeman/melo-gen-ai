@@ -52,7 +52,7 @@ components:
           type: array
           items:
             type: string
-            description: A search string representing a song to search for on YouTube Music
+            description: A search string representing a song to search for on YouTube Music. At least one search query is required.
           example:
             - "Artist - Song 1"
             - "Artist - Song 2"
