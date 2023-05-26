@@ -1,0 +1,105 @@
+openapi: 3.0.1
+info:
+  title: Smart Playlist Generator Plugin
+  description: A plugin that allows users to create YouTube Music playlists by providing a playlist title and a list of songs.
+  version: v1
+servers:
+  - url: __SERVER_URL__
+paths:
+  /api/playlist:
+    post:
+      operationId: playlist
+      summary: Create a playlist
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/playlistRequest"
+      responses:
+        "200":
+          description: Playlist created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/createPlaylistResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorResponse"
+components:
+  schemas:
+    playlistRequest:
+      type: object
+      required:
+        - title
+        - songs
+      properties:
+        title:
+          type: string
+          description: The title of the playlist.
+        songs:
+          type: array
+          items:
+            type: string
+            description: A search string representing a song to search for on YouTube Music
+    createPlaylistResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A message about the status of the playlist creation.
+        playlist_id:
+          type: string
+          description: The ID of the generated playlist.
+        playlistUrl:
+          type: string
+          description: The URL of the generated playlist.
+        successful_insertions:
+          type: array
+          items:
+            $ref: "#/components/schemas/songMetadata"
+          description: The list of songs successfully added to the playlist.
+        failed_queries:
+          type: array
+          items:
+            type: string
+          description: The list of song search queries that failed.
+        failed_insertions:
+          type: array
+          items:
+            $ref: "#/components/schemas/songMetadata"
+          description: The list of songs that failed to be added to the playlist.
+    errorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: A message about the error that occurred.
+    songMetadata:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the song.
+        query:
+          type: string
+          description: The search text used to find the song.
+        title:
+          type: string
+          description: The actual title of the song.
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

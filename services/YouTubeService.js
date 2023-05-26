@@ -11,25 +11,19 @@ export class YouTubeService {
     });
   }
 
-  async addSongIdsTo(songs) {
-    const failed_songs = [];
-    const songs_with_ids = [];
-    for (const song of songs) {
+  async fetchMultipleSongsMetadata(songSearchQueries) {
+    const failed_queries = [];
+    const songs_with_metadata = [];
+    for (const query of songSearchQueries) {
       try {
-        const song_id = await this.getSongID(song);
-        songs_with_ids.push({
-          id: song_id,
-          title: song,
-        });
+        const metadata = await this.fetchSingleSongMetadata(query);
+        songs_with_metadata.push(metadata);
       } catch (error) {
-        console.error(`Error getting ID for song "${song}":`, error);
-        failed_songs.push({
-          id: null,
-          title: song,
-        });
+        console.error(`Error fetching metadata for query "${query}":`, error);
+        failed_queries.push(query);
       }
     }
-    return { songs_with_ids, failed_songs };
+    return { songs_with_metadata, failed_queries };
   }
 
   async insertPlaylist(title) {
@@ -52,23 +46,23 @@ export class YouTubeService {
     }
   }
 
-  async insertSongsIntoPlaylist(songs_with_ids, playlist_id) {
-    const songs_entered = [];
-    const songs_failed = [];
-    for (const song_with_id of songs_with_ids) {
+  async insertSongsIntoPlaylist(songs_with_metadata, playlist_id) {
+    const successful_insertions = [];
+    const failed_insertions = [];
+    for (const song_with_metadata of songs_with_metadata) {
       try {
-        const song = await this.insertSong(song_with_id, playlist_id);
-        songs_entered.push(song);
+        const song = await this.insertSong(song_with_metadata, playlist_id);
+        successful_insertions.push(song);
       } catch (error) {
         console.error(`Error inserting songs into playlist:`, error);
-        songs_failed.push(song_with_id);
+        failed_insertions.push(song_with_metadata);
       }
     }
-    return { songs_entered, songs_failed };
+    return { successful_insertions, failed_insertions };
   }
 
-  async insertSong(song_with_id, playlist_id) {
-    const { id, title } = song_with_id;
+  async insertSong(song_with_metadata, playlist_id) {
+    const { id, title } = song_with_metadata;
     try {
       const response = await this.youtube.playlistItems.insert({
         part: "snippet",
@@ -82,27 +76,32 @@ export class YouTubeService {
           },
         },
       });
-      return song_with_id;
+      return song_with_metadata;
     } catch (error) {
       console.error(`Error adding song "${title}" to playlist:`, error);
       throw error;
     }
   }
 
-  async getSongID(song) {
+  async fetchSingleSongMetadata(query) {
     try {
       const response = await this.youtube.search.list({
         part: "id",
-        q: song,
+        q: query,
         maxResults: 1,
         type: "video",
       });
       if (response.data.items.length === 0) {
         throw new Error("Song not found");
       }
-      return response.data.items[0].id.videoId;
+      const videoDetails = response.data.items[0];
+      return {
+        id: videoDetails.id.videoId,
+        query,
+        title: videoDetails.snippet.title,
+      };
     } catch (error) {
-      console.error(`Error getting song ID for "${song}":`, error);
+      console.error(`Error fetching metadata for query "${query}":`, error);
       throw error;
     }
   }
