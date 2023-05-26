@@ -8,7 +8,7 @@ info:
 servers:
   - url: ${process.env.SERVER_URL}
 paths:
-  /playlist:
+  /api/playlist:
     post:
       operationId: playlist
       summary: Create a playlist
