@@ -19,9 +19,8 @@ export default async function playlist(req, res) {
   }
 
   const accessToken = authParts[1];
-  const youTubeService = new YouTubeService(accessToken);
   const { code, ...createdPlaylist } = await createPlaylist(
-    youTubeService,
+    accessToken,
     title,
     songs
   );
@@ -29,7 +28,9 @@ export default async function playlist(req, res) {
   res.status(code).json(createdPlaylist);
 }
 
-async function createPlaylist(youtubeService, title, songs) {
+async function createPlaylist(accessToken, title, songs) {
+  const youtubeService = new YouTubeService(accessToken);
+
   const { songs_with_ids, failed_songs } = await youtubeService.addSongIdsTo(
     songs
   );
@@ -39,7 +40,7 @@ async function createPlaylist(youtubeService, title, songs) {
     const response = await youtubeService.insertPlaylist(title);
     playlist_id = response.playlist_id;
   } catch (error) {
-    console.error("failed to insert playlist");
+    console.error("Failed to insert playlist");
     return { code: 500, error: error.message, failed_songs };
   }
 
@@ -47,7 +48,7 @@ async function createPlaylist(youtubeService, title, songs) {
     await youtubeService.insertSongsIntoPlaylist(songs_with_ids, playlist_id);
 
   if (songs_entered.length == 0) {
-    console.error("failed to create playlist");
+    console.error("Failed to create playlist");
     return {
       code: 500,
       message: "Error: Could not create playlist",
