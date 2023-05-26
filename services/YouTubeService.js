@@ -86,7 +86,7 @@ export class YouTubeService {
   async fetchSingleSongMetadata(query) {
     try {
       const response = await this.youtube.search.list({
-        part: "id",
+        part: "id,snippet",
         q: query,
         maxResults: 1,
         type: "video",
