@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Smart Playlist Generator Plugin
-  description: A plugin that allows users to create YouTube Music playlists by providing a playlist title and a list of songs.
+  description: A plugin that allows users to create YouTube Music playlists by providing a playlist title and a list of song search queries.
   version: v1
 servers:
   - url: __SERVER_URL__
@@ -43,16 +43,19 @@ components:
       type: object
       required:
         - title
-        - songs
+        - searchQueries
       properties:
         title:
           type: string
           description: The title of the playlist.
-        songs:
+        searchQueries:
           type: array
           items:
             type: string
             description: A search string representing a song to search for on YouTube Music
+          example:
+            - "Artist - Song 1"
+            - "Artist - Song 2"
     createPlaylistResponse:
       type: object
       properties:
@@ -69,7 +72,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/songMetadata"
-          description: The list of songs successfully added to the playlist.
+          description: The list of songs successfully inserted into the playlist.
         failed_queries:
           type: array
           items:
@@ -79,7 +82,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/songMetadata"
-          description: The list of songs that failed to be added to the playlist.
+          description: The list of songs that failed to be inserted into the playlist.
     errorResponse:
       type: object
       properties:
@@ -97,7 +100,7 @@ components:
           description: The search text used to find the song.
         title:
           type: string
-          description: The actual title of the song.
+          description: The title of the song.
   securitySchemes:
     BearerAuth:
       type: http

@@ -1,7 +1,7 @@
 import { YouTubeService } from "../services/YouTubeService.js";
 
 export default async function playlist(req, res) {
-  const { title, songs } = req.body;
+  const { title, searchQueries } = req.body;
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     console.error("Authorization header is required");
@@ -22,17 +22,17 @@ export default async function playlist(req, res) {
   const { code, ...createdPlaylist } = await createPlaylist(
     accessToken,
     title,
-    songs
+    searchQueries
   );
 
   res.status(code).json(createdPlaylist);
 }
 
-async function createPlaylist(accessToken, title, songs) {
+async function createPlaylist(accessToken, title, searchQueries) {
   const youtubeService = new YouTubeService(accessToken);
 
   const { songs_with_metadata, failed_queries } =
-    await youtubeService.fetchMultipleSongsMetadata(songs);
+    await youtubeService.fetchMultipleSongsMetadata(searchQueries);
 
   let playlist_id;
   try {
@@ -54,8 +54,8 @@ async function createPlaylist(accessToken, title, songs) {
     return {
       code: 500,
       message: "Error: Could not create playlist",
-      failed_queries: failed_queries,
-      failed_insertions: failed_insertions,
+      failed_queries,
+      failed_insertions,
     };
   }
 
