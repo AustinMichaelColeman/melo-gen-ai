@@ -24,10 +24,11 @@ I welcome collaboration! Reach out to me. My email is listed on https://www.aust
 
 ## Configuration
 
-For future reference to myself or others who'd like to fork this project, here is how you configure it:
+This project is deployed using [Vercel Serverless Functions](https://vercel.com/docs/concepts/functions/serverless-functions):
 
 ### Environment variables
-1. Set the following environment variables:
+
+1. From within Vercel, set these environment variables:
    - `SERVER_URL`: Your server URL, such as `app.vercel.com`
    - `CONTACT_EMAIL`: Your contact email address
    - `OPENAI_VERIFICATION_TOKEN`: Obtain this token from OpenAI. See the [ChatGPT Plugin OAuth docs](https://platform.openai.com/docs/plugins/authentication/oauth)
