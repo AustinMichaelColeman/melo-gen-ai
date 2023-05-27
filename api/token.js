@@ -5,6 +5,7 @@ export default async function token(req, res) {
 
   if (!code) {
     console.error("authorization code required");
+    console.error(req);
     return res.status(400).json({ error: "Authorization code is required" });
   }
 
