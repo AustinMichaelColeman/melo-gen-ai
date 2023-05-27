@@ -34,7 +34,7 @@ For future reference to myself or others who'd like to fork this project, here i
    - `AUTH_PROVIDER_URL`: URL for the authentication provider (e.g., `https://accounts.google.com/o/oauth2/v2/auth`)
    - `TOKEN_PROVIDER_URL`: URL for the token provider (e.g., `https://oauth2.googleapis.com/token`)
 
-Additionally, in your Google Cloud console be sure to update the authorized JavaScript origins and Authorized redirect URIs.
+Additionally, in your Google Cloud console be sure to update the authorized JavaScript origins and Authorized redirect URIs. The token that comes from OpenAI during the plugin creation process needs to go into the authorized redirect URI.
 
 ## Use of Trademarks
 
