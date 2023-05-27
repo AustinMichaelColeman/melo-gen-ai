@@ -12,21 +12,21 @@ export class YouTubeService {
   }
 
   async fetchMultipleSongsMetadata(songSearchQueries) {
+    const fetched_song_metadata = [];
     const failed_queries = [];
-    const songs_with_metadata = [];
     for (const query of songSearchQueries) {
-      try {
-        const metadata = await this.fetchSingleSongMetadata(query);
-        songs_with_metadata.push(metadata);
-      } catch (error) {
-        console.error(`Error fetching metadata for query "${query}":`, error);
+      const metadata = await this.fetchSingleSongMetadata(query);
+      if (metadata) {
+        fetched_song_metadata.push(metadata);
+      } else {
         failed_queries.push(query);
       }
     }
-    return { songs_with_metadata, failed_queries };
+    return { fetched_song_metadata, failed_queries };
   }
 
   async insertPlaylist(title) {
+    let playlist_id = null;
     try {
       const response = await this.youtube.playlists.insert({
         part: "snippet,status",
@@ -39,32 +39,36 @@ export class YouTubeService {
           },
         },
       });
-      return { playlist_id: response.data.id };
+      playlist_id = response.data.id;
     } catch (error) {
-      console.error(`Error creating playlist "${title}":`, error);
-      throw error;
+      console.error("Error creating playlist", title, error);
     }
+    return playlist_id;
   }
 
-  async insertSongsIntoPlaylist(songs_with_metadata, playlist_id) {
+  async insertSongsIntoPlaylist(multiple_songs_metadata, playlist_id) {
     const successful_insertions = [];
     const failed_insertions = [];
-    for (const song_with_metadata of songs_with_metadata) {
-      try {
-        const song = await this.insertSong(song_with_metadata, playlist_id);
-        successful_insertions.push(song);
-      } catch (error) {
-        console.error(`Error inserting songs into playlist:`, error);
-        failed_insertions.push(song_with_metadata);
+    for (const single_song_metadata of multiple_songs_metadata) {
+      const success = await this.insertSong(single_song_metadata, playlist_id);
+      if (success) {
+        successful_insertions.push(single_song_metadata);
+      } else {
+        console.error(
+          `Error inserting song ${JSON.stringify(
+            single_song_metadata
+          )} into playlist`
+        );
+        failed_insertions.push(single_song_metadata);
       }
     }
     return { successful_insertions, failed_insertions };
   }
 
-  async insertSong(song_with_metadata, playlist_id) {
-    const { id, title } = song_with_metadata;
+  async insertSong(single_song_metadata, playlist_id) {
+    const { id, title } = single_song_metadata;
     try {
-      const response = await this.youtube.playlistItems.insert({
+      await this.youtube.playlistItems.insert({
         part: "snippet",
         requestBody: {
           snippet: {
@@ -76,33 +80,41 @@ export class YouTubeService {
           },
         },
       });
-      return song_with_metadata;
+      return true;
     } catch (error) {
       console.error(`Error adding song "${title}" to playlist:`, error);
-      throw error;
+      return false;
     }
   }
 
   async fetchSingleSongMetadata(query) {
+    const searchParams = {
+      part: "id,snippet",
+      q: query,
+      maxResults: 1,
+      type: "video",
+    };
+
     try {
-      const response = await this.youtube.search.list({
-        part: "id,snippet",
-        q: query,
-        maxResults: 1,
-        type: "video",
-      });
-      if (response.data.items.length === 0) {
-        throw new Error("Song not found");
+      const response = await this.youtube.search.list(searchParams);
+
+      const items = response.data.items;
+      if (items.length === 0) {
+        console.error(`No song found for query "${query}"`);
+        return null;
       }
-      const videoDetails = response.data.items[0];
-      return {
+
+      const videoDetails = items[0];
+      const songMetadata = {
         id: videoDetails.id.videoId,
         query,
         title: videoDetails.snippet.title,
       };
+
+      return songMetadata;
     } catch (error) {
       console.error(`Error fetching metadata for query "${query}":`, error);
-      throw error;
+      return null;
     }
   }
 }

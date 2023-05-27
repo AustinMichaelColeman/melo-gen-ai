@@ -45,36 +45,48 @@ export default async function playlist(req, res) {
 async function createPlaylist(accessToken, title, searchQueries) {
   const youtubeService = new YouTubeService(accessToken);
 
-  const { songs_with_metadata, failed_queries } =
+  const { fetched_song_metadata, failed_queries } =
     await youtubeService.fetchMultipleSongsMetadata(searchQueries);
 
-  let playlist_id;
-  try {
-    const response = await youtubeService.insertPlaylist(title);
-    playlist_id = response.playlist_id;
-  } catch (error) {
+  if (fetched_song_metadata.length === 0) {
+    console.error("All song fetch queries failed");
+    return { code: 500, failed_queries };
+  }
+
+  const playlist_id = await youtubeService.insertPlaylist(title);
+
+  if (!playlist_id) {
     console.error("Failed to insert playlist");
-    return { code: 500, error: error.message, failed_queries };
+    return { code: 500, failed_queries };
   }
 
   const { successful_insertions, failed_insertions } =
     await youtubeService.insertSongsIntoPlaylist(
-      songs_with_metadata,
+      fetched_song_metadata,
       playlist_id
     );
 
-  if (successful_insertions.length == 0) {
-    console.error("Failed to create playlist");
-    return {
-      code: 500,
-      message: "Error: Could not create playlist",
-      failed_queries,
-      failed_insertions,
-    };
+  if (successful_insertions.length === 0) {
+    console.error("All song insert queries failed");
+    return { code: 500, failed_queries, failed_insertions };
   }
 
   const playlist_prefix = "https://music.youtube.com/browse/VL";
   const playlistUrl = `${playlist_prefix}${playlist_id}`;
+
+  if (successful_insertions.length > 0 && failed_insertions.length > 0) {
+    console.error("Some song insert queries failed");
+    return {
+      code: 200,
+      message: "Playlist created with some failures",
+      playlist_id,
+      playlistUrl,
+      failed_queries,
+      failed_insertions,
+      successful_insertions,
+    };
+  }
+
   return {
     code: 200,
     message: "Playlist created successfully",
