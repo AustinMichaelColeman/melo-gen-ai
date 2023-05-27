@@ -1,13 +1,13 @@
 export default function auth(req, res) {
   try {
-    const { AUTH_PROVIDER_URL, AUTH_PROVIDER_CLIENT_ID, REDIRECT_URI, SCOPE } =
-      process.env;
+    const { response_type, client_id, scope, redirect_uri } = req.body;
+    const { AUTH_PROVIDER_URL } = process.env;
 
     const params = new URLSearchParams({
-      client_id: AUTH_PROVIDER_CLIENT_ID,
-      redirect_uri: REDIRECT_URI,
-      response_type: "code",
-      scope: SCOPE,
+      client_id,
+      redirect_uri,
+      response_type,
+      scope,
       access_type: "offline",
     });
 
