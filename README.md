@@ -18,6 +18,7 @@ This plugin works as a prototype, but I plan to implement these features for [pr
 * Timeouts
 * Terms/privacy policy
 * Try to get some feedback to see if I'm making any auth/security mistakes
+* Tests
 
 Also if you're curious, you can see some of the [playlists](https://music.youtube.com/browse/UC7S-wmivIpyNwZVrc3PlA-A) I've generated so far while developing it.
 
