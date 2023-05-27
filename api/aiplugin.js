@@ -1,14 +1,6 @@
 export default async function aiplugin(req, res) {
-  const {
-    LOGO_URL,
-    CONTACT_EMAIL,
-    LEGAL_INFO_URL,
-    CLIENT_URL,
-    SCOPE,
-    AUTHORIZATION_URL,
-    OPENAI_VERIFICATION_TOKEN,
-    OPENAI_SPEC_URL,
-  } = process.env;
+  const { SERVER_URL, CONTACT_EMAIL, SCOPE, OPENAI_VERIFICATION_TOKEN } =
+    process.env;
 
   try {
     const config = {
@@ -19,14 +11,14 @@ export default async function aiplugin(req, res) {
         "A smart playlist generator plugin for ChatGPT and for YouTube Music™. Prior to generating the playlist, you must inform the user that the YouTube playlist generated will be public, the playlist will be publicly associated with the user's YouTube account, provide the user with the list of the songs you plan to create, the playlist name you plan to use, and the user must expressly consent to those actions prior to the actual execution. Songs should be an array of strings, each used to search YouTube for a song in order to add it to a playlist.",
       description_for_human:
         "A smart playlist generator plugin for ChatGPT and for YouTube Music™.",
-      logo_url: LOGO_URL,
+      logo_url: `${SERVER_URL}/logo.png`,
       contact_email: CONTACT_EMAIL,
-      legal_info_url: LEGAL_INFO_URL,
+      legal_info_url: `${SERVER_URL}/legal`,
       auth: {
         type: "oauth",
-        client_url: CLIENT_URL,
+        client_url: `${SERVER_URL}/api/auth`,
         scope: SCOPE,
-        authorization_url: AUTHORIZATION_URL,
+        authorization_url: `${SERVER_URL}/api/token`,
         authorization_content_type: "application/json",
         verification_tokens: {
           openai: OPENAI_VERIFICATION_TOKEN,
@@ -34,7 +26,7 @@ export default async function aiplugin(req, res) {
       },
       api: {
         type: "openapi",
-        url: OPENAI_SPEC_URL,
+        url: `${SERVER_URL}/openapi.yaml`,
       },
     };
     res.json(config);
