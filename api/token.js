@@ -1,28 +1,22 @@
 import axios from "axios";
 
 export default async function token(req, res) {
-  const { code } = req.query;
+  const { grant_type, client_id, client_secret, code, redirect_uri } = req.body;
 
   if (!code) {
     console.error("authorization code required");
-    console.error(req.query);
     return res.status(400).json({ error: "Authorization code is required" });
   }
 
-  const {
-    TOKEN_PROVIDER_URL,
-    AUTH_PROVIDER_CLIENT_ID,
-    AUTH_PROVIDER_CLIENT_SECRET,
-    REDIRECT_URI,
-  } = process.env;
+  const { TOKEN_PROVIDER_URL } = process.env;
 
   try {
     const response = await axios.post(TOKEN_PROVIDER_URL, {
       code,
-      client_id: AUTH_PROVIDER_CLIENT_ID,
-      client_secret: AUTH_PROVIDER_CLIENT_SECRET,
-      redirect_uri: REDIRECT_URI,
-      grant_type: "authorization_code",
+      client_id,
+      client_secret,
+      redirect_uri,
+      grant_type,
     });
 
     return res.json(response.data);
