@@ -4,6 +4,7 @@ export default async function token(req, res) {
   const { code } = req.query;
 
   if (!code) {
+    console.error("authorization code required");
     return res.status(400).json({ error: "Authorization code is required" });
   }
 
@@ -25,6 +26,7 @@ export default async function token(req, res) {
 
     return res.json(response.data);
   } catch (error) {
+    console.error(error);
     return res
       .status(500)
       .json({ error: "Failed to exchange authorization code for tokens" });
