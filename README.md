@@ -2,7 +2,13 @@
 
 A smart playlist generator plugin for ChatGPT and for YouTube Music™
 
-Check out [this recording](https://www.linkedin.com/feed/update/urn:li:activity:7067945888945508352/) to get an idea of what it's like.
+![image](https://github.com/AustinMichaelColeman/smart-playlist-generator/assets/12992271/e9980b5b-4e3e-4ee0-bc4b-c8b92b234a95)
+
+
+
+Here's the playlist it generated: https://music.youtube.com/browse/VLPLHue5YJSxY0hLyp_8NmmzzWPwhdsCrZYa
+
+You can also check out [this recording](https://www.linkedin.com/feed/update/urn:li:activity:7067945888945508352/) to get an idea of what it's like.
 
 ## Under development
 
