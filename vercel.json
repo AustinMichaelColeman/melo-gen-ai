@@ -15,6 +15,14 @@
     {
       "source": "/logo.png",
       "destination": "android-chrome-512x512.png"
+    },
+    {
+      "source": "/api/token",
+      "destination": "/api/token.js"
+    },
+    {
+      "source": "/api/auth",
+      "destination": "/api/auth.js"
     }
   ],
   "headers": [
