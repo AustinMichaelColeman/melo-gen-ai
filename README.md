@@ -26,15 +26,20 @@ I welcome collaboration! Reach out to me. My email is listed on https://www.aust
 
 For future reference to myself or others who'd like to fork this project, here is how you configure it:
 
+### Environment variables
 1. Set the following environment variables:
    - `SERVER_URL`: Your server URL, such as `app.vercel.com`
    - `CONTACT_EMAIL`: Your contact email address
-   - `OPENAI_VERIFICATION_TOKEN`: Obtain this token from OpenAI. See the [ChatGPT Plugin docs](https://platform.openai.com/docs/plugins/introduction)
+   - `OPENAI_VERIFICATION_TOKEN`: Obtain this token from OpenAI. See the [ChatGPT Plugin OAuth docs](https://platform.openai.com/docs/plugins/authentication/oauth)
    - `SCOPE`: Enter the scopes you're using from Google API. Unfortunately Google does not give granular permissions over playlist creation for YouTube Music. So in order for this plugin to work, it requires very broad YouTube scopes to create playlists and insert songs into playlists: `https://www.googleapis.com/auth/youtubepartner https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.force-ssl`
    - `AUTH_PROVIDER_URL`: URL for the authentication provider (e.g., `https://accounts.google.com/o/oauth2/v2/auth`)
    - `TOKEN_PROVIDER_URL`: URL for the token provider (e.g., `https://oauth2.googleapis.com/token`)
 
-Additionally, in your Google Cloud console be sure to update the authorized JavaScript origins and Authorized redirect URIs. The token that comes from OpenAI during the plugin creation process needs to go into the authorized redirect URI.
+### Google Cloud console
+Authorized redirect URI: https://chat.openai.com/aip/YOUR_PLUGIN_ID/oauth/callback (replace **YOUR_PLUGIN_ID** with the ID of your plugin)
+Authorized JavaScript origins: Your server URL, such as `app.vercel.com`
+
+See the [ChatGPT Plugin OAuth docs](https://platform.openai.com/docs/plugins/authentication/oauth) for more info about obtaining a plugin ID
 
 ## Use of Trademarks
 
