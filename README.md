@@ -2,9 +2,16 @@
 
 A smart playlist generator plugin for ChatGPT and for YouTube Music™
 
+Check out [this recording](https://www.linkedin.com/feed/update/urn:li:activity:7067945888945508352/) to get an idea of what it's like.
+
 ## Under development
 
-This plugin is in development, but if you'd like to see it in action check out [this recording I made](https://www.linkedin.com/feed/update/urn:li:activity:7067945888945508352/).
+This plugin works as a prototype, but I plan to implement these features for [production](https://platform.openai.com/docs/plugins/production/plugins-in-production):
+
+* Rate limits
+* Timeouts
+* Terms/privacy policy
+* Try to get some feedback to see if I'm making any auth/security mistakes
 
 Also if you're curious, you can see some of the [playlists](https://music.youtube.com/browse/UC7S-wmivIpyNwZVrc3PlA-A) I've generated so far while developing it.
 
@@ -24,11 +31,11 @@ I welcome collaboration! Reach out to me. My email is listed on https://www.aust
 
 ## Configuration
 
-This project is deployed using [Vercel Serverless Functions](https://vercel.com/docs/concepts/functions/serverless-functions):
+This project is deployed using [Vercel Serverless Functions](https://vercel.com/docs/concepts/functions/serverless-functions) and uses [Google Cloud](https://console.cloud.google.com/) for auth.
 
 ### Environment variables
 
-1. From within Vercel, set these environment variables:
+1. From within Vercel, set these [environment variables](https://vercel.com/docs/concepts/projects/environment-variables):
    - `SERVER_URL`: Your server URL, such as `app.vercel.com`
    - `CONTACT_EMAIL`: Your contact email address
    - `OPENAI_VERIFICATION_TOKEN`: Obtain this token from OpenAI. See the [ChatGPT Plugin OAuth docs](https://platform.openai.com/docs/plugins/authentication/oauth)
@@ -37,6 +44,9 @@ This project is deployed using [Vercel Serverless Functions](https://vercel.com/
    - `TOKEN_PROVIDER_URL`: URL for the token provider (e.g., `https://oauth2.googleapis.com/token`)
 
 ### Google Cloud console
+
+You will need a client id and secret from 
+
 Authorized redirect URI: https://chat.openai.com/aip/YOUR_PLUGIN_ID/oauth/callback (replace **YOUR_PLUGIN_ID** with the ID of your plugin)
 Authorized JavaScript origins: Your server URL, such as `app.vercel.com`
 
