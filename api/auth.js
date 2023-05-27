@@ -1,6 +1,6 @@
 export default function auth(req, res) {
   try {
-    const { response_type, client_id, scope, redirect_uri } = req.body;
+    const { response_type, client_id, scope, redirect_uri } = req.query;
     const { AUTH_PROVIDER_URL } = process.env;
 
     const params = new URLSearchParams({
