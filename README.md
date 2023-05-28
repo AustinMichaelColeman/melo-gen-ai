@@ -12,13 +12,7 @@ You can also check out [this recording](https://www.linkedin.com/feed/update/urn
 
 ## Under development
 
-This plugin works as a prototype, but I plan to implement these features for [production](https://platform.openai.com/docs/plugins/production/plugins-in-production):
-
-* Rate limits
-* Timeouts
-* Terms/privacy policy
-* Try to get some feedback to see if I'm making any auth/security mistakes
-* Tests
+This plugin works as a prototype, and I'm working towards getting it ready for [production](https://platform.openai.com/docs/plugins/production/plugins-in-production).
 
 Also if you're curious, you can see some of the [playlists](https://music.youtube.com/browse/UC7S-wmivIpyNwZVrc3PlA-A) I've generated so far while developing it.
 
