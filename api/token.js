@@ -19,6 +19,8 @@ export default async function token(req, res) {
       grant_type,
     });
 
+    console.log("response.data", response.data);
+
     return res.json(response.data);
   } catch (error) {
     console.error(error);
