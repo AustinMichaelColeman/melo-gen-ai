@@ -19,13 +19,14 @@ export default async function token(req, res) {
       grant_type,
     });
 
-    console.log("response.data", response.data);
-
     return res.json(response.data);
   } catch (error) {
-    console.error(error);
-    return res
-      .status(500)
-      .json({ error: "Failed to exchange authorization code for tokens" });
+    const errorCode = error.response?.status || 500;
+
+    console.error("error.response.data:", error.response?.data);
+
+    res
+      .status(errorCode)
+      .json({ error: "An error occurred while processing your request." });
   }
 }
