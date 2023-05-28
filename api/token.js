@@ -1,12 +1,23 @@
 import axios from "axios";
 
 export default async function token(req, res) {
-  const { grant_type, client_id, client_secret, code, redirect_uri } = req.body;
+  const {
+    grant_type,
+    client_id,
+    client_secret,
+    code,
+    redirect_uri,
+    refresh_token,
+  } = req.body;
 
-  console.log("req.body", req.body);
-  if (!code) {
+  if (grant_type === "authorization_code" && !code) {
     console.error("authorization code required");
     return res.status(400).json({ error: "Authorization code is required" });
+  }
+
+  if (grant_type === "refresh_token" && !refresh_token) {
+    console.error("refresh token required");
+    return res.status(400).json({ error: "Refresh token is required" });
   }
 
   const { TOKEN_PROVIDER_URL } = process.env;
@@ -14,6 +25,7 @@ export default async function token(req, res) {
   try {
     const response = await axios.post(TOKEN_PROVIDER_URL, {
       code,
+      refresh_token,
       client_id,
       client_secret,
       redirect_uri,
