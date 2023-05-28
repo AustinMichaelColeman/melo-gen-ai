@@ -1,6 +1,6 @@
-import createPlaylist from "../../api/playlist";
-import { YouTubeService } from "../services/YouTubeService";
-import { YouTubeAPIError } from "../errors/customErrors";
+import createPlaylist from "../../api/playlist.js";
+import { YouTubeService } from "../services/YouTubeService.js";
+import { YouTubeAPIError } from "../errors/customErrors.js";
 
 jest.mock("../services/YouTubeService");
 

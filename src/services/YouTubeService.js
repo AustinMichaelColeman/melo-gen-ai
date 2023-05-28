@@ -1,5 +1,5 @@
 import { google } from "googleapis";
-import { YouTubeAPIError } from "../errors/customErrors";
+import { YouTubeAPIError } from "../errors/customErrors.js";
 
 export class YouTubeService {
   constructor(accessToken) {
