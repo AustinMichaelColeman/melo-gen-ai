@@ -297,4 +297,39 @@ describe("createPlaylist", () => {
       resolvedSchemas.createPlaylistResponse
     );
   });
+
+  it("responds with an object that matches the OpenAPI schema on failure when title is missing", async () => {
+    const mockFetchSingleSongMetadata = jest.fn();
+    const mockInsertPlaylist = jest.fn();
+    const mockInsertSong = jest.fn();
+
+    YouTubeService.mockImplementation(() => {
+      return {
+        fetchSingleSongMetadata: mockFetchSingleSongMetadata,
+        insertPlaylist: mockInsertPlaylist,
+        insertSong: mockInsertSong,
+      };
+    });
+
+    const req = {
+      headers: {
+        authorization: "Bearer accessToken",
+      },
+      body: {
+        searchQueries: ["Test Song"],
+      },
+    };
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    await createPlaylist(req, res);
+
+    // Validate the response against the schema
+    expect(res.json.mock.calls[0][0]).toMatchSchema(
+      resolvedSchemas.errorResponse
+    );
+  });
 });
