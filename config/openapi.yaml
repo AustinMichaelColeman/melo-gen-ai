@@ -73,22 +73,23 @@ components:
           items:
             $ref: "#/components/schemas/songMetadata"
           description: The list of songs successfully inserted into the playlist.
-        failed_queries:
-          type: array
-          items:
-            type: string
-          description: The list of song search queries that failed.
-        failed_insertions:
-          type: array
-          items:
-            $ref: "#/components/schemas/songMetadata"
-          description: The list of songs that failed to be inserted into the playlist.
     errorResponse:
       type: object
       properties:
         error:
           type: string
           description: A message about the error that occurred.
+        playlist_id:
+          type: string
+          description: The ID of the playlist, if it was created before the error occurred.
+        playlistUrl:
+          type: string
+          description: The URL of the playlist, if it was created before the error occurred.
+        successful_insertions:
+          type: array
+          items:
+            $ref: "#/components/schemas/songMetadata"
+          description: The list of songs successfully inserted into the playlist before the error occurred.
     songMetadata:
       type: object
       properties:

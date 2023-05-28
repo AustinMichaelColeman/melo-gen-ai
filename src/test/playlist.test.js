@@ -46,8 +46,6 @@ describe("createPlaylist", () => {
       playlist_id: "playlist123",
       playlistUrl: "https://music.youtube.com/browse/VLplaylist123",
       successful_insertions: [{ id: "123", title: "Test Song" }],
-      failed_queries: [],
-      failed_insertions: [],
     });
   });
 
@@ -193,6 +191,53 @@ describe("createPlaylist", () => {
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({
       error: "Unauthorized",
+    });
+  });
+
+  it("stops inserting songs as soon as an error occurs during insertion", async () => {
+    const mockFetchSingleSongMetadata = jest
+      .fn()
+      .mockResolvedValueOnce({ id: "123", title: "Test Song 1" })
+      .mockResolvedValueOnce({ id: "456", title: "Test Song 2" });
+    const mockInsertPlaylist = jest.fn().mockResolvedValue("playlist123");
+    const mockInsertSong = jest
+      .fn()
+      .mockResolvedValueOnce()
+      .mockRejectedValueOnce(new YouTubeAPIError("Failed to insert song", 429));
+
+    YouTubeService.mockImplementation(() => {
+      return {
+        fetchSingleSongMetadata: mockFetchSingleSongMetadata,
+        insertPlaylist: mockInsertPlaylist,
+        insertSong: mockInsertSong,
+      };
+    });
+
+    const req = {
+      headers: {
+        authorization: "Bearer accessToken",
+      },
+      body: {
+        title: "Test Playlist",
+        searchQueries: ["Test Song 1", "Test Song 2", "Test Song 3"],
+      },
+    };
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    await createPlaylist(req, res);
+
+    expect(mockFetchSingleSongMetadata).toHaveBeenCalledTimes(2);
+    expect(mockInsertSong).toHaveBeenCalledTimes(2);
+    expect(res.status).toHaveBeenCalledWith(429);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Failed to insert song",
+      playlist_id: "playlist123",
+      playlistUrl: "https://music.youtube.com/browse/VLplaylist123",
+      successful_insertions: [{ id: "123", title: "Test Song 1" }],
     });
   });
 });
