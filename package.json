@@ -5,6 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "start": "vercel dev",
+    "test:once": "jest",
     "test": "jest --watch"
   },
   "type": "module",
