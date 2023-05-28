@@ -31,3 +31,9 @@ export class InternalServerError extends CustomError {
     super(message, 500, details);
   }
 }
+
+export class YouTubeAPIError extends CustomError {
+  constructor(message, code, details = null) {
+    super(message || "Unknown YouTube API error", code || 500, details);
+  }
+}

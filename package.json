@@ -4,16 +4,27 @@
   "description": "A smart playlist generator plugin for ChatGPT and for YouTube Music™.",
   "main": "src/server.js",
   "scripts": {
-    "start": "vercel dev"
+    "start": "vercel dev",
+    "test": "jest --watch"
   },
   "type": "module",
   "author": "Austin Coleman",
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.22.1",
+    "@babel/preset-env": "^7.22.2",
+    "babel-jest": "^29.5.0",
+    "jest": "^29.5.0",
+    "jest-mock-axios": "^4.7.2",
     "vercel": "^30.0.0"
   },
   "dependencies": {
     "axios": "^1.4.0",
     "googleapis": "^118.0.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
   }
 }

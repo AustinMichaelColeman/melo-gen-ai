@@ -1,4 +1,5 @@
 import { google } from "googleapis";
+import { YouTubeAPIError } from "../errors/customErrors";
 
 export class YouTubeService {
   constructor(accessToken) {
@@ -9,20 +10,6 @@ export class YouTubeService {
       version: "v3",
       auth: oauth2Client,
     });
-  }
-
-  async fetchMultipleSongsMetadata(songSearchQueries) {
-    const fetched_song_metadata = [];
-    const failed_queries = [];
-    for (const query of songSearchQueries) {
-      const metadata = await this.fetchSingleSongMetadata(query);
-      if (metadata) {
-        fetched_song_metadata.push(metadata);
-      } else {
-        failed_queries.push(query);
-      }
-    }
-    return { fetched_song_metadata, failed_queries };
   }
 
   async insertPlaylist(title) {
@@ -42,27 +29,12 @@ export class YouTubeService {
       playlist_id = response.data.id;
     } catch (error) {
       console.error("Error creating playlist", title, error);
+      throw new YouTubeAPIError(
+        error.response?.data?.error?.message,
+        error.response?.status
+      );
     }
     return playlist_id;
-  }
-
-  async insertSongsIntoPlaylist(multiple_songs_metadata, playlist_id) {
-    const successful_insertions = [];
-    const failed_insertions = [];
-    for (const single_song_metadata of multiple_songs_metadata) {
-      const success = await this.insertSong(single_song_metadata, playlist_id);
-      if (success) {
-        successful_insertions.push(single_song_metadata);
-      } else {
-        console.error(
-          `Error inserting song ${JSON.stringify(
-            single_song_metadata
-          )} into playlist`
-        );
-        failed_insertions.push(single_song_metadata);
-      }
-    }
-    return { successful_insertions, failed_insertions };
   }
 
   async insertSong(single_song_metadata, playlist_id) {
@@ -80,10 +52,12 @@ export class YouTubeService {
           },
         },
       });
-      return true;
     } catch (error) {
       console.error(`Error adding song "${title}" to playlist:`, error);
-      return false;
+      throw new YouTubeAPIError(
+        error.response?.data?.error?.message,
+        error.response?.status
+      );
     }
   }
 
@@ -114,7 +88,10 @@ export class YouTubeService {
       return songMetadata;
     } catch (error) {
       console.error(`Error fetching metadata for query "${query}":`, error);
-      return null;
+      throw new YouTubeAPIError(
+        error.response?.data?.error?.message,
+        error.response?.status
+      );
     }
   }
 }

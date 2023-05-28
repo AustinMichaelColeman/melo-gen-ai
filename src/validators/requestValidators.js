@@ -2,7 +2,7 @@ import { AuthorizationError, BadRequestError } from "../errors/customErrors.js";
 
 export function validateAuthorizationHeader(authHeader) {
   if (!authHeader) {
-    throw new AuthorizationError("Authorization header is required");
+    throw new AuthorizationError("Unauthorized");
   }
 
   const authParts = authHeader.split(" ");
@@ -17,14 +17,14 @@ export function validateAuthorizationHeader(authHeader) {
 
 export function validateRequestBody(body) {
   const { title, searchQueries } = body;
+  if (!title) {
+    throw new BadRequestError("Invalid title");
+  }
   if (
-    !title ||
     !searchQueries ||
     (Array.isArray(searchQueries) && searchQueries.length === 0)
   ) {
-    throw new BadRequestError(
-      "Title and at least one search query are required"
-    );
+    throw new BadRequestError("Invalid searchQueries");
   }
 
   return { title, searchQueries };

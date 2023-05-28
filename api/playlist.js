@@ -1,4 +1,7 @@
-import { InternalServerError } from "../src/errors/customErrors.js";
+import {
+  InternalServerError,
+  YouTubeAPIError,
+} from "../src/errors/customErrors.js";
 import { YouTubeService } from "../src/services/YouTubeService.js";
 import {
   validateAuthorizationHeader,
@@ -27,52 +30,68 @@ export default async function playlist(req, res) {
 async function createPlaylist(accessToken, title, searchQueries) {
   const youtubeService = new YouTubeService(accessToken);
 
-  const { fetched_song_metadata, failed_queries } =
-    await youtubeService.fetchMultipleSongsMetadata(searchQueries);
+  let playlist_id;
+  const successful_insertions = [];
+  const failed_queries = [];
+  const failed_insertions = [];
 
-  if (fetched_song_metadata.length === 0) {
-    throw new InternalServerError(
-      "All song fetch queries failed",
-      failed_queries
-    );
-  }
+  for (const query of searchQueries) {
+    let songMetadata;
+    try {
+      songMetadata = await youtubeService.fetchSingleSongMetadata(query);
+      if (songMetadata) {
+        // Create the playlist after fetching the first song
+        if (!playlist_id) {
+          playlist_id = await youtubeService.insertPlaylist(title);
+          if (!playlist_id) {
+            throw new YouTubeAPIError("Failed to create playlist");
+          }
+        }
 
-  const playlist_id = await youtubeService.insertPlaylist(title);
-
-  if (!playlist_id) {
-    throw new InternalServerError("Failed to insert playlist", failed_queries);
-  }
-
-  const { successful_insertions, failed_insertions } =
-    await youtubeService.insertSongsIntoPlaylist(
-      fetched_song_metadata,
-      playlist_id
-    );
-
-  if (successful_insertions.length === 0) {
-    throw new InternalServerError("All song insert queries failed", {
-      failed_queries,
-      failed_insertions,
-    });
+        // Insert the song into the playlist
+        await youtubeService.insertSong(songMetadata, playlist_id);
+        successful_insertions.push(songMetadata);
+      } else {
+        failed_queries.push(query);
+      }
+    } catch (error) {
+      // As soon as an error occurs, add the current query and any remaining queries to failed_queries
+      failed_queries.push(
+        query,
+        ...searchQueries.slice(
+          successful_insertions.length + failed_queries.length + 1
+        )
+      );
+      // If songMetadata exists, it means an error occurred during insertion
+      if (songMetadata) {
+        failed_insertions.push(songMetadata);
+      }
+      // Add any remaining songs to failed_insertions
+      failed_insertions.push(
+        ...searchQueries.slice(
+          successful_insertions.length + failed_queries.length
+        )
+      );
+      const playlist_prefix = "https://music.youtube.com/browse/VL";
+      const playlistUrl = `${playlist_prefix}${playlist_id}`;
+      throw new YouTubeAPIError(error.message, error.code, {
+        playlist_id,
+        playlistUrl,
+        successful_insertions,
+        failed_queries,
+        failed_insertions,
+      });
+    }
   }
 
   const playlist_prefix = "https://music.youtube.com/browse/VL";
   const playlistUrl = `${playlist_prefix}${playlist_id}`;
 
-  if (successful_insertions.length > 0 && failed_insertions.length > 0) {
-    console.error("Some song insert queries failed");
-    return {
-      message: "Playlist created with some failures",
-      playlist_id,
-      playlistUrl,
-      successful_insertions,
-      failed_queries,
-      failed_insertions,
-    };
-  }
-
   return {
-    message: "Playlist created successfully",
+    message:
+      successful_insertions.length > 0
+        ? "Playlist created successfully"
+        : "Playlist creation failed",
     playlist_id,
     playlistUrl,
     successful_insertions,
