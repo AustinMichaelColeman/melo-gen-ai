@@ -9,6 +9,7 @@ export default function auth(req, res) {
       response_type,
       scope,
       access_type: "offline",
+      prompt: "consent",
     });
 
     res.redirect(`${AUTH_PROVIDER_URL}?${params.toString()}`);
