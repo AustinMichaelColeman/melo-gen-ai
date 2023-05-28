@@ -1,12 +1,31 @@
+import path from "path";
+import YAML from "js-yaml";
+import { matchers } from "jest-json-schema";
+import { resolveRefsAt } from "json-refs";
 import createPlaylist from "../../api/playlist.js";
 import { YouTubeService } from "../services/YouTubeService.js";
 import { YouTubeAPIError } from "../errors/customErrors.js";
 
 jest.mock("../services/YouTubeService");
 
-// Mock console.error
 console.error = jest.fn();
 
+let resolvedSchemas;
+
+// Resolve the references in the OpenAPI spec before all tests
+beforeAll(async () => {
+  const openApiSpecPath = path.resolve(__dirname, "../../config/openapi.yaml");
+  const resolved = await resolveRefsAt(openApiSpecPath, {
+    loaderOptions: {
+      processContent: function (res, callback) {
+        callback(null, YAML.load(res.text));
+      },
+    },
+  });
+  resolvedSchemas = resolved.resolved.components.schemas;
+});
+
+expect.extend(matchers);
 describe("createPlaylist", () => {
   it("creates a playlist successfully", async () => {
     const mockFetchSingleSongMetadata = jest
@@ -239,5 +258,43 @@ describe("createPlaylist", () => {
       playlistUrl: "https://music.youtube.com/browse/VLplaylist123",
       successful_insertions: [{ id: "123", title: "Test Song 1" }],
     });
+  });
+
+  it("responds with an object that matches the OpenAPI schema on success", async () => {
+    const mockFetchSingleSongMetadata = jest
+      .fn()
+      .mockResolvedValue({ id: "123", title: "Test Song" });
+    const mockInsertPlaylist = jest.fn().mockResolvedValue("playlist123");
+    const mockInsertSong = jest.fn().mockResolvedValue();
+
+    YouTubeService.mockImplementation(() => {
+      return {
+        fetchSingleSongMetadata: mockFetchSingleSongMetadata,
+        insertPlaylist: mockInsertPlaylist,
+        insertSong: mockInsertSong,
+      };
+    });
+
+    const req = {
+      headers: {
+        authorization: "Bearer accessToken",
+      },
+      body: {
+        title: "Test Playlist",
+        searchQueries: ["Test Song"],
+      },
+    };
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    await createPlaylist(req, res);
+
+    // Validate the response against the schema
+    expect(res.json.mock.calls[0][0]).toMatchSchema(
+      resolvedSchemas.createPlaylistResponse
+    );
   });
 });
