@@ -3,6 +3,7 @@ import axios from "axios";
 export default async function token(req, res) {
   const { grant_type, client_id, client_secret, code, redirect_uri } = req.body;
 
+  console.log("req.body", req.body);
   if (!code) {
     console.error("authorization code required");
     return res.status(400).json({ error: "Authorization code is required" });
