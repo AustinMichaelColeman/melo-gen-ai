@@ -12,7 +12,8 @@
         --text-color: #333;
         --background-color: #ddd;
         --header-color: rgb(20, 100, 180);
-        --link-color: #004466;
+        --link-color: #006699;
+        --link-visited-color: #004466;
         --logo-width: 150px;
         --header-text-margin-left: 20px;
         --content-max-width: 800px;
@@ -23,7 +24,8 @@
           --text-color: #f4f4f4;
           --background-color: #222;
           --header-color: rgb(41, 182, 246);
-          --link-color: #88f;
+          --link-color: #8ad;
+          --link-visited-color: #88f;
         }
       }
 
@@ -73,6 +75,10 @@
 
       a {
         color: var(--link-color);
+      }
+
+      a:visited {
+        color: var(--link-visited-color);
       }
 
       img {
