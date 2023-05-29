@@ -4,8 +4,6 @@ A smart playlist generator plugin for ChatGPT and for YouTube Music™
 
 ![image](https://github.com/AustinMichaelColeman/smart-playlist-generator/assets/12992271/e9980b5b-4e3e-4ee0-bc4b-c8b92b234a95)
 
-
-
 Here's the playlist it generated: https://music.youtube.com/browse/VLPLHue5YJSxY0hLyp_8NmmzzWPwhdsCrZYa
 
 You can also check out [this recording](https://www.linkedin.com/feed/update/urn:li:activity:7067945888945508352/) to get an idea of what it's like.
@@ -40,13 +38,13 @@ This project is deployed using [Vercel Serverless Functions](https://vercel.com/
    - `SERVER_URL`: Your server URL, such as `app.vercel.com`
    - `CONTACT_EMAIL`: Your contact email address
    - `OPENAI_VERIFICATION_TOKEN`: Obtain this token from OpenAI. See the [ChatGPT Plugin OAuth docs](https://platform.openai.com/docs/plugins/authentication/oauth)
-   - `SCOPE`: Enter the scopes you're using from Google API. Unfortunately Google does not give granular permissions over playlist creation for YouTube Music. So in order for this plugin to work, it requires very broad YouTube scopes to create playlists and insert songs into playlists: `https://www.googleapis.com/auth/youtubepartner https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.force-ssl`
+   - `SCOPE`: Enter the scopes you're using from Google API.
    - `AUTH_PROVIDER_URL`: URL for the authentication provider (e.g., `https://accounts.google.com/o/oauth2/v2/auth`)
    - `TOKEN_PROVIDER_URL`: URL for the token provider (e.g., `https://oauth2.googleapis.com/token`)
 
 ### Google Cloud console
 
-You will need a client id and secret from 
+You will need a client id and secret from Google Cloud.
 
 Authorized redirect URI: https://chat.openai.com/aip/YOUR_PLUGIN_ID/oauth/callback (replace **YOUR_PLUGIN_ID** with the ID of your plugin)
 Authorized JavaScript origins: Your server URL, such as `app.vercel.com`
