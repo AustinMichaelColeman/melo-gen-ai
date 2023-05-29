@@ -58,6 +58,11 @@ components:
             - "Artist - Song 2"
     createPlaylistResponse:
       type: object
+      required:
+        - message
+        - playlist_id
+        - playlistUrl
+        - successful_insertions
       properties:
         message:
           type: string
@@ -75,23 +80,32 @@ components:
           description: The list of songs successfully inserted into the playlist.
     errorResponse:
       type: object
+      required:
+        - error
       properties:
         error:
           type: string
           description: A message about the error that occurred.
         playlist_id:
           type: string
+          nullable: true
           description: The ID of the playlist, if it was created before the error occurred.
         playlistUrl:
           type: string
+          nullable: true
           description: The URL of the playlist, if it was created before the error occurred.
         successful_insertions:
           type: array
           items:
             $ref: "#/components/schemas/songMetadata"
+          nullable: true
           description: The list of songs successfully inserted into the playlist before the error occurred.
     songMetadata:
       type: object
+      required:
+        - id
+        - query
+        - title
       properties:
         id:
           type: string

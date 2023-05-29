@@ -28,9 +28,11 @@ beforeAll(async () => {
 expect.extend(matchers);
 describe("createPlaylist", () => {
   it("creates a playlist successfully", async () => {
-    const mockFetchSingleSongMetadata = jest
-      .fn()
-      .mockResolvedValue({ id: "123", title: "Test Song" });
+    const mockFetchSingleSongMetadata = jest.fn().mockResolvedValue({
+      id: "123",
+      title: "Test Title",
+      query: "Test Query",
+    });
     const mockInsertPlaylist = jest.fn().mockResolvedValue("playlist123");
     const mockInsertSong = jest.fn().mockResolvedValue();
 
@@ -48,7 +50,7 @@ describe("createPlaylist", () => {
       },
       body: {
         title: "Test Playlist",
-        searchQueries: ["Test Song"],
+        searchQueries: ["Test Query"],
       },
     };
 
@@ -64,14 +66,18 @@ describe("createPlaylist", () => {
       message: "Playlist created successfully",
       playlist_id: "playlist123",
       playlistUrl: "https://music.youtube.com/browse/VLplaylist123",
-      successful_insertions: [{ id: "123", title: "Test Song" }],
+      successful_insertions: [
+        { id: "123", title: "Test Title", query: "Test Query" },
+      ],
     });
   });
 
   it("returns an error when playlist creation fails due to YouTubeAPIError", async () => {
-    const mockFetchSingleSongMetadata = jest
-      .fn()
-      .mockResolvedValue({ id: "123", title: "Test Song" });
+    const mockFetchSingleSongMetadata = jest.fn().mockResolvedValue({
+      id: "123",
+      title: "Test Title",
+      query: "Test Query",
+    });
     const mockInsertPlaylist = jest
       .fn()
       .mockRejectedValue(new YouTubeAPIError("Failed to create playlist", 429));
@@ -91,7 +97,7 @@ describe("createPlaylist", () => {
       },
       body: {
         title: "Test Playlist",
-        searchQueries: ["Test Song"],
+        searchQueries: ["Test Query"],
       },
     };
 
@@ -162,7 +168,7 @@ describe("createPlaylist", () => {
         authorization: "Bearer accessToken",
       },
       body: {
-        searchQueries: ["Test Song"],
+        searchQueries: ["Test Query"],
       },
     };
 
@@ -196,7 +202,7 @@ describe("createPlaylist", () => {
       headers: {},
       body: {
         title: "Test Playlist",
-        searchQueries: ["Test Song"],
+        searchQueries: ["Test Query"],
       },
     };
 
@@ -216,8 +222,16 @@ describe("createPlaylist", () => {
   it("stops inserting songs as soon as an error occurs during insertion", async () => {
     const mockFetchSingleSongMetadata = jest
       .fn()
-      .mockResolvedValueOnce({ id: "123", title: "Test Song 1" })
-      .mockResolvedValueOnce({ id: "456", title: "Test Song 2" });
+      .mockResolvedValueOnce({
+        id: "123",
+        title: "Test Title 1",
+        query: "Test Query 1",
+      })
+      .mockResolvedValueOnce({
+        id: "456",
+        title: "Test Title 2",
+        query: "Test Query 2",
+      });
     const mockInsertPlaylist = jest.fn().mockResolvedValue("playlist123");
     const mockInsertSong = jest
       .fn()
@@ -238,7 +252,7 @@ describe("createPlaylist", () => {
       },
       body: {
         title: "Test Playlist",
-        searchQueries: ["Test Song 1", "Test Song 2", "Test Song 3"],
+        searchQueries: ["Test Query 1", "Test Query 2", "Test Query 3"],
       },
     };
 
@@ -256,80 +270,203 @@ describe("createPlaylist", () => {
       error: "Failed to insert song",
       playlist_id: "playlist123",
       playlistUrl: "https://music.youtube.com/browse/VLplaylist123",
-      successful_insertions: [{ id: "123", title: "Test Song 1" }],
+      successful_insertions: [
+        { id: "123", title: "Test Title 1", query: "Test Query 1" },
+      ],
     });
   });
 
-  it("responds with an object that matches the OpenAPI schema on success", async () => {
-    const mockFetchSingleSongMetadata = jest
-      .fn()
-      .mockResolvedValue({ id: "123", title: "Test Song" });
-    const mockInsertPlaylist = jest.fn().mockResolvedValue("playlist123");
-    const mockInsertSong = jest.fn().mockResolvedValue();
+  describe("OpenAPI Schema Validation Tests", () => {
+    it("responds with an object that matches the OpenAPI schema on success", async () => {
+      const mockFetchSingleSongMetadata = jest.fn().mockResolvedValue({
+        id: "123",
+        title: "Test Title",
+        query: "Test Query",
+      });
+      const mockInsertPlaylist = jest.fn().mockResolvedValue("playlist123");
+      const mockInsertSong = jest.fn().mockResolvedValue();
 
-    YouTubeService.mockImplementation(() => {
-      return {
-        fetchSingleSongMetadata: mockFetchSingleSongMetadata,
-        insertPlaylist: mockInsertPlaylist,
-        insertSong: mockInsertSong,
+      YouTubeService.mockImplementation(() => {
+        return {
+          fetchSingleSongMetadata: mockFetchSingleSongMetadata,
+          insertPlaylist: mockInsertPlaylist,
+          insertSong: mockInsertSong,
+        };
+      });
+
+      const req = {
+        headers: {
+          authorization: "Bearer accessToken",
+        },
+        body: {
+          title: "Test Playlist",
+          searchQueries: ["Test Query"],
+        },
       };
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      await createPlaylist(req, res);
+
+      // Validate the response against the schema
+      expect(res.json.mock.calls[0][0]).toMatchSchema(
+        resolvedSchemas.createPlaylistResponse
+      );
     });
 
-    const req = {
-      headers: {
-        authorization: "Bearer accessToken",
-      },
-      body: {
-        title: "Test Playlist",
-        searchQueries: ["Test Song"],
-      },
-    };
+    it("responds with an object that matches the OpenAPI schema on failure when title is missing", async () => {
+      const mockFetchSingleSongMetadata = jest.fn();
+      const mockInsertPlaylist = jest.fn();
+      const mockInsertSong = jest.fn();
 
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
+      YouTubeService.mockImplementation(() => {
+        return {
+          fetchSingleSongMetadata: mockFetchSingleSongMetadata,
+          insertPlaylist: mockInsertPlaylist,
+          insertSong: mockInsertSong,
+        };
+      });
 
-    await createPlaylist(req, res);
-
-    // Validate the response against the schema
-    expect(res.json.mock.calls[0][0]).toMatchSchema(
-      resolvedSchemas.createPlaylistResponse
-    );
-  });
-
-  it("responds with an object that matches the OpenAPI schema on failure when title is missing", async () => {
-    const mockFetchSingleSongMetadata = jest.fn();
-    const mockInsertPlaylist = jest.fn();
-    const mockInsertSong = jest.fn();
-
-    YouTubeService.mockImplementation(() => {
-      return {
-        fetchSingleSongMetadata: mockFetchSingleSongMetadata,
-        insertPlaylist: mockInsertPlaylist,
-        insertSong: mockInsertSong,
+      const req = {
+        headers: {
+          authorization: "Bearer accessToken",
+        },
+        body: {
+          searchQueries: ["Test Query"],
+        },
       };
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      await createPlaylist(req, res);
+
+      // Validate the response against the schema
+      expect(res.json.mock.calls[0][0]).toMatchSchema(
+        resolvedSchemas.errorResponse
+      );
     });
 
-    const req = {
-      headers: {
-        authorization: "Bearer accessToken",
-      },
-      body: {
-        searchQueries: ["Test Song"],
-      },
-    };
+    it("validates the request body against the playlistRequest schema", async () => {
+      const req = {
+        headers: {
+          authorization: "Bearer accessToken",
+        },
+        body: {
+          title: "Test Playlist",
+          searchQueries: ["Test Song"],
+        },
+      };
 
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
 
-    await createPlaylist(req, res);
+      await createPlaylist(req, res);
 
-    // Validate the response against the schema
-    expect(res.json.mock.calls[0][0]).toMatchSchema(
-      resolvedSchemas.errorResponse
-    );
+      expect(req.body).toMatchSchema(resolvedSchemas.playlistRequest);
+    });
+
+    it("validates the successful response against the createPlaylistResponse schema", async () => {
+      const req = {
+        headers: {
+          authorization: "Bearer accessToken",
+        },
+        body: {
+          title: "Test Playlist",
+          searchQueries: ["Test Song"],
+        },
+      };
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      // Mock the YouTubeService methods
+      YouTubeService.mockImplementation(() => {
+        return {
+          insertPlaylist: jest.fn().mockResolvedValue("test_playlist_id"),
+          insertSong: jest.fn().mockResolvedValue(),
+          fetchSingleSongMetadata: jest.fn().mockResolvedValue({
+            id: "test_song_id",
+            query: "test_query",
+            title: "test_title",
+          }),
+        };
+      });
+
+      await createPlaylist(req, res);
+
+      expect(res.json.mock.calls[0][0]).toMatchSchema(
+        resolvedSchemas.createPlaylistResponse
+      );
+    });
+
+    it("validates the error response against the errorResponse schema when title is missing", async () => {
+      const req = {
+        headers: {
+          authorization: "Bearer accessToken",
+        },
+        body: {
+          searchQueries: ["Test Song"],
+        },
+      };
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      await createPlaylist(req, res);
+
+      expect(res.json.mock.calls[0][0]).toMatchSchema(
+        resolvedSchemas.errorResponse
+      );
+    });
+
+    it("validates the song metadata against the songMetadata schema", async () => {
+      const req = {
+        headers: {
+          authorization: "Bearer accessToken",
+        },
+        body: {
+          title: "Test Playlist",
+          searchQueries: ["Test Song"],
+        },
+      };
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      // Mock the YouTubeService methods
+      YouTubeService.mockImplementation(() => {
+        return {
+          insertPlaylist: jest.fn().mockResolvedValue("test_playlist_id"),
+          insertSong: jest.fn().mockResolvedValue(),
+          fetchSingleSongMetadata: jest.fn().mockResolvedValue({
+            id: "test_song_id",
+            query: "test_query",
+            title: "test_title",
+          }),
+        };
+      });
+
+      await createPlaylist(req, res);
+
+      const successfulInsertions =
+        res.json.mock.calls[0][0].successful_insertions;
+
+      const songMetadata = successfulInsertions[0];
+      expect(songMetadata).toMatchSchema(resolvedSchemas.songMetadata);
+    });
   });
 });
