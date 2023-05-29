@@ -71,7 +71,6 @@ describe("createPlaylist", () => {
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
-      message: "Playlist created successfully",
       playlist_id: "playlist123",
       playlistUrl: "https://music.youtube.com/browse/VLplaylist123",
       successful_insertions: [

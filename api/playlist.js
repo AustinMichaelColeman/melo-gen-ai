@@ -72,10 +72,6 @@ async function createPlaylist(accessToken, title, searchQueries) {
   const playlistUrl = `${playlist_prefix}${playlist_id}`;
 
   return {
-    message:
-      successful_insertions.length > 0
-        ? "Playlist created successfully"
-        : "Playlist creation failed",
     playlist_id,
     playlistUrl,
     successful_insertions,

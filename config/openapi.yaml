@@ -59,14 +59,10 @@ components:
     createPlaylistResponse:
       type: object
       required:
-        - message
         - playlist_id
         - playlistUrl
         - successful_insertions
       properties:
-        message:
-          type: string
-          description: A message about the status of the playlist creation.
         playlist_id:
           type: string
           description: The ID of the generated playlist.
