@@ -23,7 +23,7 @@ To generate a playlist, the plugin will request from the user:
         "A playlist generator plugin for ChatGPT and for YouTube Music™",
       logo_url: `${SERVER_URL}/logo.png`,
       contact_email: CONTACT_EMAIL,
-      legal_info_url: `${SERVER_URL}/legal`,
+      legal_info_url: `${SERVER_URL}/terms`,
       auth: {
         type: "oauth",
         client_url: `${SERVER_URL}/api/auth`,
