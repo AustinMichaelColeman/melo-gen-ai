@@ -120,6 +120,28 @@ describe("createPlaylist", () => {
     });
   });
 
+  it("returns an error when playlist title is empty", async () => {
+    req.body.title = "";
+
+    await createPlaylist(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Invalid title",
+    });
+  });
+
+  it("returns an error when playlist title exceeds maximum length", async () => {
+    req.body.title = "a".repeat(151);
+
+    await createPlaylist(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Playlist title is too long. Maximum length is 150 characters.",
+    });
+  });
+
   it("returns an error when authorization token is missing", async () => {
     delete req.headers.authorization;
 

@@ -19,6 +19,10 @@ export function validateRequestBody(body) {
   const { title, searchQueries } = body;
   if (!title) {
     throw new BadRequestError("Invalid title");
+  } else if (title.length > 150) {
+    throw new BadRequestError(
+      "Playlist title is too long. Maximum length is 150 characters."
+    );
   }
   if (
     !searchQueries ||
