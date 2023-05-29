@@ -23,6 +23,14 @@
     {
       "source": "/api/auth",
       "destination": "/api/auth.js"
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
     }
   ],
   "headers": [
