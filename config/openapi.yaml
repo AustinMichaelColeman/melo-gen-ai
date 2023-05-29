@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: Smart Playlist Generator Plugin
-  description: A plugin that allows users to create YouTube Music playlists by providing a playlist title and a list of song search queries.
+  title: MeloGenAI
+  description: A playlist generator plugin that allows users to create playlists by providing a playlist title and a list of song search queries for ChatGPT and for YouTube Music™.
   version: v1
 servers:
   - url: __SERVER_URL__

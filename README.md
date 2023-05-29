@@ -1,18 +1,6 @@
-# smart-playlist-generator
+# melo-gen-ai
 
-A smart playlist generator plugin for ChatGPT and for YouTube Music™
-
-![image](https://github.com/AustinMichaelColeman/smart-playlist-generator/assets/12992271/e9980b5b-4e3e-4ee0-bc4b-c8b92b234a95)
-
-Here's the playlist it generated: https://music.youtube.com/browse/VLPLHue5YJSxY0hLyp_8NmmzzWPwhdsCrZYa
-
-You can also check out [this recording](https://www.linkedin.com/feed/update/urn:li:activity:7067945888945508352/) to get an idea of what it's like.
-
-## Under development
-
-This plugin works as a prototype, and I'm working towards getting it ready for [production](https://platform.openai.com/docs/plugins/production/plugins-in-production).
-
-Also if you're curious, you can see some of the [playlists](https://music.youtube.com/browse/UC7S-wmivIpyNwZVrc3PlA-A) I've generated so far while developing it.
+MeloGenAI is a playlist generator plugin for ChatGPT and for YouTube Music™.
 
 ## Features
 
@@ -30,7 +18,7 @@ I welcome collaboration! Reach out to me. My email is listed on https://www.aust
 
 ## Configuration
 
-This project is deployed using [Vercel Serverless Functions](https://vercel.com/docs/concepts/functions/serverless-functions) and uses [Google Cloud](https://console.cloud.google.com/) for auth.
+This project is deployed using [Vercel Serverless Functions](https://vercel.com/docs/concepts/functions/serverless-functions) and uses [Google Cloud](https://console.cloud.google.com/) for auth. If you are trying to fork this project, this information may be helpful:
 
 ### Environment variables
 
@@ -56,3 +44,5 @@ See the [ChatGPT Plugin OAuth docs](https://platform.openai.com/docs/plugins/aut
 YouTube Music™ is a trademark of Google Inc. Use of this trademark is subject to [Google Permissions](https://about.google/brand-resource-center/).
 
 ChatGPT is a trademark of OpenAI. Use of this trademark is subject to [OpenAI Brand guidelines](https://openai.com/brand).
+
+This is an independent personal project available for free use. Aside from being available as a plugin for ChatGPT, it is not officially supported by nor associated with OpenAI, ChatGPT, Google, nor YouTube Music™.

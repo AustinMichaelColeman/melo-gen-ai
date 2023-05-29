@@ -1,7 +1,7 @@
 {
-  "name": "smart-playlist-generator",
+  "name": "melo-gen-ai",
   "version": "1.0.0",
-  "description": "A smart playlist generator plugin for ChatGPT and for YouTube Music™.",
+  "description": "A playlist generator plugin for ChatGPT and for YouTube Music™.",
   "main": "src/server.js",
   "scripts": {
     "start": "vercel dev",
