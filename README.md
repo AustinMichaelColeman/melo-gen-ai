@@ -8,10 +8,6 @@ MeloGenAI is a playlist generator plugin for ChatGPT and for YouTube Music™.
 - Searches YouTube for each song title provided, adding the first returned result to the playlist.
 - Prioritizes user privacy by seeking consent before starting the song search and playlist creation process.
 
-## Collaborating
-
-I welcome collaboration! Reach out to me. My email is listed on https://www.austincoleman.dev/
-
 ## Configuration
 
 This project is deployed using [Vercel Serverless Functions](https://vercel.com/docs/concepts/functions/serverless-functions) and uses [Google Cloud](https://console.cloud.google.com/) for auth. If you are trying to fork this project, this information may be helpful:
@@ -42,3 +38,7 @@ YouTube Music™ is a trademark of Google Inc. Use of this trademark is subject 
 ChatGPT is a trademark of OpenAI. Use of this trademark is subject to [OpenAI Brand guidelines](https://openai.com/brand).
 
 This is an independent personal project available for free use. Aside from being available as a plugin for ChatGPT, it is not officially supported by nor associated with OpenAI, ChatGPT, Google, nor YouTube Music™.
+
+## Contact
+
+Feel free to reach out to me at https://www.austincoleman.dev/
