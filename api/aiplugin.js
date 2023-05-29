@@ -7,18 +7,8 @@ export default async function aiplugin(req, res) {
       schema_version: "v1",
       name_for_model: "MeloGenAI",
       name_for_human: "MeloGenAI",
-      description_for_model: `MeloGenAI is a playlist generator plugin for ChatGPT and YouTube Music™. It creates a public YouTube playlist associated with your YouTube Music account based on a list of song titles you provide. 
-
-Please note:
-- The YouTube playlist generated will be public.
-- The YouTube playlist will be associated with your YouTube Music account.
-- You can revoke the permissions at any time at https://myaccount.google.com/permissions.
-- The plugin works by searching YouTube for each song title and adding the first result to the playlist. The accuracy of the search results may vary.
-
-To generate a playlist, the plugin will request from the user:
-- The name of the playlist.
-- The list of song titles to search and add to the playlist.`,
-
+      description_for_model:
+        "MeloGenAI is a plugin for generating a YouTube Music playlist based on a provided playlist title and list of songs. Before generating the playlist, the user must give explicit informed consent. The user must be informed of all of the following prior to generating the playlist: the playlist will be public and associated with their YouTube Music account, the plugin will list the title and song list and get explicit consent prior to generating the playlist, the plugin works by searching YouTube for each provided song and adding the first result to the playlist, which may occasionally lead to inaccurate results, and that access can be revoked at any time at https://myaccount.google.com/permissions.",
       description_for_human:
         "A playlist generator plugin for ChatGPT and for YouTube Music™",
       logo_url: `${SERVER_URL}/logo.png`,
