@@ -261,7 +261,6 @@ describe("createPlaylist", () => {
 
       await createPlaylist(req, res);
 
-      console.log("res.json.mock.calls[0][0]", res.json.mock.calls[0][0]);
       // Validate the response against the schema
       expect(res.json.mock.calls[0][0]).toMatchSchema(
         resolvedSchemas.createPlaylistResponse
