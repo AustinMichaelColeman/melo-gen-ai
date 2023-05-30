@@ -43,7 +43,7 @@ YouTube Music™ is a trademark of Google Inc. Use of this trademark is subject 
 
 ChatGPT is a trademark of OpenAI. Use of this trademark is subject to [OpenAI Brand guidelines](https://openai.com/brand).
 
-This is an independent personal project available for free use. Aside from being available as a plugin for ChatGPT, it is not officially supported by nor associated with OpenAI, ChatGPT, Google, nor YouTube Music™.
+This is an independent personal project available for free use. It is not officially supported by nor associated with OpenAI, ChatGPT, Google, nor YouTube Music™.
 
 ## Contact
 
