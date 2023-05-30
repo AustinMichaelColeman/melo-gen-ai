@@ -9,7 +9,7 @@ paths:
   /api/playlist:
     post:
       operationId: playlist
-      summary: Create a playlist by searching YouTube for each query in searchQueries and adding the first search result to the playlist. May produce inaccurate or unexpected results if the first result is not what the user expected.
+      summary: Create a playlist by searching YouTube for each query in searchQueries and adding the first search result to the playlist. May produce inaccurate or unexpected results if the first result is not what the user expected. Limited to __SONG_LIMIT__ queries at a time.
       security:
         - BearerAuth: []
       requestBody:
@@ -71,14 +71,12 @@ components:
           description: The ID of the generated playlist.
         playlistUrl:
           type: string
-          description: The URL of the generated playlist.
+          description: The URL of the generated playlist on YouTube Music.
         successful_insertions:
           type: array
           items:
             $ref: "#/components/schemas/songMetadata"
-          description: |
-            The list of songs successfully inserted into the playlist.
-            The user is free to continue editing the playlist at the link returned by the request beyond the __SONG_LIMIT__ song limit.
+          description: The list of songs successfully inserted into the playlist. The user is free to continue editing the playlist at the link returned by the request beyond the __SONG_LIMIT__ song limit of the plugin imposed by the plugin developer and not by YouTube.
     errorResponse:
       type: object
       required:
