@@ -1,12 +1,16 @@
 import path from "path";
 import fs from "fs";
+import replacePlaceholders from "../src/utils/replacePlaceholders.js";
 
 export default async function openapi(req, res) {
   try {
     const filePath = path.resolve("./config/openapi.yaml");
 
     let openapiYaml = await fs.promises.readFile(filePath, "utf8");
-    openapiYaml = openapiYaml.replace("__SERVER_URL__", process.env.SERVER_URL);
+    openapiYaml = replacePlaceholders(openapiYaml, {
+      __SERVER_URL__: process.env.SERVER_URL,
+      __SONG_LIMIT__: process.env.SONG_LIMIT,
+    });
 
     res.setHeader("Content-Type", "text/yaml");
     res.send(openapiYaml);

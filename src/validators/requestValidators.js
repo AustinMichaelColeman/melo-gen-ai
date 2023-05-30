@@ -17,18 +17,29 @@ export function validateAuthorizationHeader(authHeader) {
 
 export function validateRequestBody(body) {
   const { title, searchQueries } = body;
-  if (!title) {
-    throw new BadRequestError("Invalid title");
-  } else if (title.length > 150) {
+
+  if (
+    !title ||
+    typeof title !== "string" ||
+    title.length === 0 ||
+    title.length > 150
+  ) {
     throw new BadRequestError(
-      "Playlist title is too long. Maximum length is 150 characters."
+      "Invalid title. Title must be between 1 and 150 characters."
     );
   }
+
   if (
     !searchQueries ||
-    (Array.isArray(searchQueries) && searchQueries.length === 0)
+    typeof searchQueries !== "object" ||
+    !Array.isArray(searchQueries) ||
+    searchQueries.length === 0 ||
+    searchQueries.length > 3 ||
+    !searchQueries.every((query) => typeof query === "string")
   ) {
-    throw new BadRequestError("Invalid searchQueries");
+    throw new BadRequestError(
+      `Invalid searchQueries. Must include between 1 and ${process.env.SONG_LIMIT} (inclusively) search queries.`
+    );
   }
 
   return { title, searchQueries };

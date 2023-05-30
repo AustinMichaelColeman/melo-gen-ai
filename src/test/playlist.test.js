@@ -5,12 +5,14 @@ import { resolveRefsAt } from "json-refs";
 import createPlaylist from "../../api/playlist.js";
 import { YouTubeService } from "../services/YouTubeService.js";
 import { YouTubeAPIError } from "../errors/customErrors.js";
+import replacePlaceholders from "../utils/replacePlaceholders.js";
 
 jest.mock("../services/YouTubeService");
 
 console.error = jest.fn();
 
 let resolvedSchemas;
+let songLimit = 3;
 
 // Resolve the references in the OpenAPI spec before all tests
 beforeAll(async () => {
@@ -18,11 +20,19 @@ beforeAll(async () => {
   const resolved = await resolveRefsAt(openApiSpecPath, {
     loaderOptions: {
       processContent: function (res, callback) {
-        callback(null, YAML.load(res.text));
+        const openapiYaml = replacePlaceholders(res.text, {
+          __SERVER_URL__: process.env.SERVER_URL,
+          __SONG_LIMIT__: process.env.SONG_LIMIT,
+        });
+        callback(null, YAML.load(openapiYaml));
       },
     },
   });
   resolvedSchemas = resolved.resolved.components.schemas;
+  songLimit = Number(process.env.SONG_LIMIT);
+  if (isNaN(songLimit)) {
+    throw new Error("SONG_LIMIT must be a number");
+  }
 });
 
 expect.extend(matchers);
@@ -104,7 +114,7 @@ describe("createPlaylist", () => {
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      error: "Invalid searchQueries",
+      error: `Invalid searchQueries. Must include between 1 and ${process.env.SONG_LIMIT} (inclusively) search queries.`,
     });
   });
 
@@ -115,7 +125,7 @@ describe("createPlaylist", () => {
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      error: "Invalid title",
+      error: "Invalid title. Title must be between 1 and 150 characters.",
     });
   });
 
@@ -126,7 +136,7 @@ describe("createPlaylist", () => {
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      error: "Invalid title",
+      error: "Invalid title. Title must be between 1 and 150 characters.",
     });
   });
 
@@ -137,7 +147,7 @@ describe("createPlaylist", () => {
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      error: "Playlist title is too long. Maximum length is 150 characters.",
+      error: "Invalid title. Title must be between 1 and 150 characters.",
     });
   });
 
@@ -183,6 +193,19 @@ describe("createPlaylist", () => {
       successful_insertions: [
         { id: "123", title: "Test Title 1", query: "Test Query 1" },
       ],
+    });
+  });
+
+  it(`does not allow more than ${process.env.SONG_LIMIT} songs to be queried at a time`, async () => {
+    req.body.searchQueries = Array.from(
+      { length: songLimit + 1 },
+      (_, i) => `Test Query ${i + 1}`
+    );
+
+    await createPlaylist(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: `Invalid searchQueries. Must include between 1 and ${process.env.SONG_LIMIT} (inclusively) search queries.`,
     });
   });
 
