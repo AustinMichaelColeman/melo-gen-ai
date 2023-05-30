@@ -26,11 +26,15 @@
     },
     {
       "source": "/terms",
-      "destination": "/terms.html"
+      "destination": "/api/terms.js"
     },
     {
       "source": "/privacy",
-      "destination": "/privacy.html"
+      "destination": "/api/privacy.js"
+    },
+    {
+      "source": "/",
+      "destination": "/api/index.js"
     }
   ],
   "headers": [
