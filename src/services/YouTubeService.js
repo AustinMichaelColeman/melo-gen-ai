@@ -67,6 +67,7 @@ export class YouTubeService {
       q: query,
       maxResults: 1,
       type: "video",
+      videoCategoryId: "10",
     };
 
     try {
