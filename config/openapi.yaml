@@ -9,7 +9,7 @@ paths:
   /api/playlist:
     post:
       operationId: playlist
-      summary: Create a playlist.
+      summary: Create a playlist by searching YouTube for each query in searchQueries and adding the first search result to the playlist. May produce inaccurate or unexpected results if the first result is not what the user expected.
       security:
         - BearerAuth: []
       requestBody:
@@ -58,11 +58,7 @@ components:
           example:
             - "Artist - Song 1"
             - "Artist - Song 2"
-      description: |
-        Each searchQuery will be searched on YouTube.
-        The first result of each search will be added to a playlist, so results may not match expectations.
-        The playlist size limit of __SONG_LIMIT__ is not imposed by YouTube.
-        The limit only exists while the plugin is in development and may increase over time.
+      description: Each search query is used to find a song on YouTube, and the first result is added to the playlist. Outcomes may vary due to the nature of the search. IMPORTANT - searchQueries can contain at most __SONG_LIMIT__, a limit temporarily set by the developer and not by YouTube. The user can continue adding songs at the link returned.
     createPlaylistResponse:
       type: object
       required:
