@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: MeloGenAI
-  description: A playlist generator plugin that allows users to create playlists containing up to __SONG_LIMIT__ songs by providing a playlist title and a list of song search queries for ChatGPT and for YouTube Music™.
+  description: Generates playlists for YouTube Music™.
   version: v1
 servers:
   - url: __SERVER_URL__
