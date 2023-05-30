@@ -9,7 +9,7 @@ paths:
   /api/playlist:
     post:
       operationId: playlist
-      summary: Create a playlist. The playlist size limit of __SONG_LIMIT__ is not imposed by YouTube and the user is free to continue editing the playlist at the link returned by the request. The limit only exists while the plugin is in development and may increase over time.
+      summary: Create a playlist.
       security:
         - BearerAuth: []
       requestBody:
@@ -61,6 +61,8 @@ components:
       description: |
         Each searchQuery will be searched on YouTube.
         The first result of each search will be added to a playlist, so results may not match expectations.
+        The playlist size limit of __SONG_LIMIT__ is not imposed by YouTube.
+        The limit only exists while the plugin is in development and may increase over time.
     createPlaylistResponse:
       type: object
       required:
@@ -78,7 +80,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/songMetadata"
-          description: The list of songs successfully inserted into the playlist.
+          description: |
+            The list of songs successfully inserted into the playlist.
+            The user is free to continue editing the playlist at the link returned by the request beyond the __SONG_LIMIT__ song limit.
     errorResponse:
       type: object
       required:
