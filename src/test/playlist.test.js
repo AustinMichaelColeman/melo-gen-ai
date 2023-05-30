@@ -12,7 +12,6 @@ jest.mock("../services/YouTubeService");
 console.error = jest.fn();
 
 let resolvedSchemas;
-let songLimit = 3;
 
 // Resolve the references in the OpenAPI spec before all tests
 beforeAll(async () => {
@@ -22,17 +21,12 @@ beforeAll(async () => {
       processContent: function (res, callback) {
         const openapiYaml = replacePlaceholders(res.text, {
           __SERVER_URL__: process.env.SERVER_URL,
-          __SONG_LIMIT__: process.env.SONG_LIMIT,
         });
         callback(null, YAML.load(openapiYaml));
       },
     },
   });
   resolvedSchemas = resolved.resolved.components.schemas;
-  songLimit = Number(process.env.SONG_LIMIT);
-  if (isNaN(songLimit)) {
-    throw new Error("SONG_LIMIT must be a number");
-  }
 });
 
 expect.extend(matchers);
@@ -69,6 +63,10 @@ describe("createPlaylist", () => {
     });
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("creates a playlist successfully", async () => {
     mockFetchSingleSongMetadata.mockResolvedValue({
       id: "123",
@@ -83,6 +81,7 @@ describe("createPlaylist", () => {
     expect(res.json).toHaveBeenCalledWith({
       playlist_id: "playlist123",
       playlistUrl: "https://music.youtube.com/browse/VLplaylist123",
+      privacyStatus: "public",
       successful_insertions: [
         { id: "123", title: "Test Title", query: "Test Query" },
       ],
@@ -114,7 +113,7 @@ describe("createPlaylist", () => {
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      error: `Invalid searchQueries. Must include between 1 and ${process.env.SONG_LIMIT} (inclusively) search queries.`,
+      error: `Invalid searchQueries. Must include at least 1 search query.`,
     });
   });
 
@@ -196,16 +195,58 @@ describe("createPlaylist", () => {
     });
   });
 
-  it(`does not allow more than ${process.env.SONG_LIMIT} songs to be queried at a time`, async () => {
-    req.body.searchQueries = Array.from(
-      { length: songLimit + 1 },
-      (_, i) => `Test Query ${i + 1}`
-    );
+  const scenarios = [["private"], ["public"], ["unlisted"]];
+
+  test.each(scenarios)(
+    'allows the user to set the playlist as "%s"',
+    async (privacyStatus) => {
+      mockFetchSingleSongMetadata.mockResolvedValueOnce({
+        id: "123",
+        title: "Test Title 1",
+        query: "Test Query 1",
+      });
+      req.body.privacyStatus = privacyStatus;
+      mockInsertPlaylist.mockResolvedValue("playlist123");
+      mockInsertSong.mockResolvedValueOnce();
+
+      req.body.searchQueries = ["Test Query 1"];
+
+      await createPlaylist(req, res);
+
+      expect(mockFetchSingleSongMetadata).toHaveBeenCalledTimes(1);
+      expect(mockInsertSong).toHaveBeenCalledTimes(1);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        playlist_id: "playlist123",
+        playlistUrl: "https://music.youtube.com/browse/VLplaylist123",
+        successful_insertions: [
+          { id: "123", title: "Test Title 1", query: "Test Query 1" },
+        ],
+        privacyStatus: privacyStatus,
+      });
+    }
+  );
+
+  it("throws 400 status code for invalid privacyStatus", async () => {
+    mockFetchSingleSongMetadata.mockResolvedValueOnce({
+      id: "123",
+      title: "Test Title 1",
+      query: "Test Query 1",
+    });
+    req.body.privacyStatus = "invalid";
+    mockInsertPlaylist.mockResolvedValue("playlist123");
+    mockInsertSong.mockResolvedValueOnce();
+
+    req.body.searchQueries = ["Test Query 1"];
 
     await createPlaylist(req, res);
+
+    expect(mockFetchSingleSongMetadata).toHaveBeenCalledTimes(0);
+    expect(mockInsertSong).toHaveBeenCalledTimes(0);
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      error: `Invalid searchQueries. Must include between 1 and ${process.env.SONG_LIMIT} (inclusively) search queries.`,
+      error:
+        "Invalid privacyStatus. Must be one of 'public', 'private', or 'unlisted'.",
     });
   });
 
@@ -220,6 +261,7 @@ describe("createPlaylist", () => {
 
       await createPlaylist(req, res);
 
+      console.log("res.json.mock.calls[0][0]", res.json.mock.calls[0][0]);
       // Validate the response against the schema
       expect(res.json.mock.calls[0][0]).toMatchSchema(
         resolvedSchemas.createPlaylistResponse

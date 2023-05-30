@@ -9,12 +9,15 @@ import { logError } from "../src/utils/logger.js";
 export default async function playlist(req, res) {
   try {
     const accessToken = validateAuthorizationHeader(req.headers.authorization);
-    const { title, searchQueries } = validateRequestBody(req.body);
+    const { title, searchQueries, privacyStatus } = validateRequestBody(
+      req.body
+    );
 
     const createdPlaylist = await createPlaylist(
       accessToken,
       title,
-      searchQueries
+      searchQueries,
+      privacyStatus || "public"
     );
 
     res.status(200).json(createdPlaylist);
@@ -30,7 +33,12 @@ export default async function playlist(req, res) {
   }
 }
 
-async function createPlaylist(accessToken, title, searchQueries) {
+async function createPlaylist(
+  accessToken,
+  title,
+  searchQueries,
+  privacyStatus
+) {
   const youtubeService = new YouTubeService(accessToken);
 
   let playlist_id;
@@ -43,7 +51,10 @@ async function createPlaylist(accessToken, title, searchQueries) {
       if (songMetadata) {
         // Create the playlist after fetching the first song
         if (!playlist_id) {
-          playlist_id = await youtubeService.insertPlaylist(title);
+          playlist_id = await youtubeService.insertPlaylist(
+            title,
+            privacyStatus
+          );
           if (!playlist_id) {
             throw new YouTubeAPIError("Failed to create playlist");
           }
@@ -75,5 +86,6 @@ async function createPlaylist(accessToken, title, searchQueries) {
     playlist_id,
     playlistUrl,
     successful_insertions,
+    privacyStatus,
   };
 }

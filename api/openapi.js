@@ -9,7 +9,6 @@ export default async function openapi(req, res) {
     let openapiYaml = await fs.promises.readFile(filePath, "utf8");
     openapiYaml = replacePlaceholders(openapiYaml, {
       __SERVER_URL__: process.env.SERVER_URL,
-      __SONG_LIMIT__: process.env.SONG_LIMIT,
     });
 
     res.setHeader("Content-Type", "text/yaml");

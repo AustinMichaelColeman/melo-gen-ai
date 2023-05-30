@@ -16,7 +16,7 @@ export function validateAuthorizationHeader(authHeader) {
 }
 
 export function validateRequestBody(body) {
-  const { title, searchQueries } = body;
+  const { title } = body;
 
   if (
     !title ||
@@ -29,6 +29,7 @@ export function validateRequestBody(body) {
     );
   }
 
+  const { searchQueries } = body;
   if (
     !searchQueries ||
     typeof searchQueries !== "object" ||
@@ -38,9 +39,20 @@ export function validateRequestBody(body) {
     !searchQueries.every((query) => typeof query === "string")
   ) {
     throw new BadRequestError(
-      `Invalid searchQueries. Must include between 1 and ${process.env.SONG_LIMIT} (inclusively) search queries.`
+      `Invalid searchQueries. Must include at least 1 search query.`
     );
   }
 
-  return { title, searchQueries };
+  const { privacyStatus } = body;
+  if (
+    (privacyStatus && typeof privacyStatus !== "string") ||
+    (typeof privacyStatus === "string" &&
+      !["private", "public", "unlisted"].includes(privacyStatus))
+  ) {
+    throw new BadRequestError(
+      "Invalid privacyStatus. Must be one of 'public', 'private', or 'unlisted'."
+    );
+  }
+
+  return { title, searchQueries, privacyStatus };
 }

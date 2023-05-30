@@ -8,8 +8,8 @@ export default async function aiplugin(req, res) {
       name_for_model: "MeloGenAI",
       name_for_human: "MeloGenAI",
       description_for_model:
-        "Generates public playlists for YouTube Music. For this plugin, explicit well-informed user consent is strictly required for each playlist generation so that the user has control over the playlist being publicly generated on their account. Users can revoke access at any time at https://myaccount.google.com/permissions.",
-      description_for_human: "Generate public playlists for YouTube Music™.",
+        "Generate playlists for YouTube Music. Explicit informed consent is required prior to generating the playlist.",
+      description_for_human: "Generate playlists for YouTube Music™.",
       logo_url: `${SERVER_URL}/logo.png`,
       contact_email: CONTACT_EMAIL,
       legal_info_url: `${SERVER_URL}/terms`,

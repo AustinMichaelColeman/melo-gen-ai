@@ -12,7 +12,7 @@ export class YouTubeService {
     });
   }
 
-  async insertPlaylist(title) {
+  async insertPlaylist(title, privacyStatus) {
     let playlist_id = null;
     try {
       const response = await this.youtube.playlists.insert({
@@ -22,7 +22,7 @@ export class YouTubeService {
             title: title,
           },
           status: {
-            privacyStatus: "public",
+            privacyStatus: privacyStatus,
           },
         },
       });

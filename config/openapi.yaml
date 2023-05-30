@@ -9,7 +9,7 @@ paths:
   /api/playlist:
     post:
       operationId: playlist
-      summary: Create a playlist by searching YouTube for each query in searchQueries and adding the first search result to the playlist. May produce inaccurate or unexpected results if the first result is not what the user expected. Limited to __SONG_LIMIT__ queries at a time.
+      summary: Create a playlist by searching YouTube for each query in searchQueries and adding the first search result to the playlist.
       security:
         - BearerAuth: []
       requestBody:
@@ -51,20 +51,29 @@ components:
         searchQueries:
           type: array
           minItems: 1
-          maxItems: __SONG_LIMIT__
           items:
             type: string
-            description: A search string representing a song to search for on YouTube Music. At least one search query is required.
+            description: A search string representing a song to search for on YouTube. At least one search query is required.
           example:
             - "Artist - Song 1"
             - "Artist - Song 2"
-      description: Each search query is used to find a song on YouTube, and the first result is added to the playlist. Outcomes may vary due to the nature of the search. IMPORTANT - searchQueries can contain at most __SONG_LIMIT__, a limit temporarily set by the developer and not by YouTube. The user can continue adding songs at the link returned.
+        privacyStatus:
+          type: string
+          enum:
+            - private
+            - public
+            - unlisted
+          default: public
+          description: The privacy status to be set when creating the playlist. Valid options are "private", "public", and "unlisted".
+          example: public
+      description: Each search query is used to find a video on YouTube in the Music category, and the first result is added to the playlist.
     createPlaylistResponse:
       type: object
       required:
         - playlist_id
         - playlistUrl
         - successful_insertions
+        - privacyStatus
       properties:
         playlist_id:
           type: string
@@ -76,7 +85,16 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/songMetadata"
-          description: The list of songs successfully inserted into the playlist. The user is free to continue editing the playlist at the link returned by the request beyond the __SONG_LIMIT__ song limit of the plugin imposed by the plugin developer and not by YouTube.
+          description: The list of songs successfully inserted into the playlist.
+        privacyStatus:
+          type: string
+          enum:
+            - private
+            - public
+            - unlisted
+          default: public
+          description: The privacy status of the created playlist. Valid options are "private", "public", and "unlisted".
+          example: public
     errorResponse:
       type: object
       required:
@@ -108,13 +126,13 @@ components:
       properties:
         id:
           type: string
-          description: The ID of the song.
+          description: The YouTube ID of the song.
         query:
           type: string
           description: The search text used to find the song.
         title:
           type: string
-          description: The title of the song.
+          description: The YouTube title of the song.
   securitySchemes:
     BearerAuth:
       type: http
