@@ -35,7 +35,6 @@ export function validateRequestBody(body) {
     typeof searchQueries !== "object" ||
     !Array.isArray(searchQueries) ||
     searchQueries.length === 0 ||
-    searchQueries.length > 3 ||
     !searchQueries.every((query) => typeof query === "string")
   ) {
     throw new BadRequestError(
