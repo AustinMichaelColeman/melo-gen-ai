@@ -8,7 +8,7 @@ export default async function aiplugin(req, res) {
       name_for_model: "MeloGenAI",
       name_for_human: "MeloGenAI",
       description_for_model:
-        "Plugin for creating YouTube Music playlists based on a title and song list. Informed user consent is required. Access can be revoked at https://myaccount.google.com/permissions.",
+        "Plugin for generating YouTube Music playlists based on a title and song list. Informed user consent is required. Access can be revoked at https://myaccount.google.com/permissions.",
       description_for_human: "Generate playlists for YouTube Music™",
       logo_url: `${SERVER_URL}/logo.png`,
       contact_email: CONTACT_EMAIL,
