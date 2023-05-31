@@ -28,6 +28,7 @@ This project is deployed using [Vercel Serverless Functions](https://vercel.com/
    - `SCOPE`: Enter the scopes you're using from Google API.
    - `AUTH_PROVIDER_URL`: URL for the authentication provider (e.g., `https://accounts.google.com/o/oauth2/v2/auth`)
    - `TOKEN_PROVIDER_URL`: URL for the token provider (e.g., `https://oauth2.googleapis.com/token`)
+   - `PLUGIN_NAME`: The name of the plugin. I do this so that way my preview deploys show up as "MeloGenAI Preview" and "MeloGenAI"
 
 ### Google Cloud console
 

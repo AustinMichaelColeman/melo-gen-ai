@@ -1,12 +1,17 @@
 export default async function aiplugin(req, res) {
-  const { SERVER_URL, CONTACT_EMAIL, SCOPE, OPENAI_VERIFICATION_TOKEN } =
-    process.env;
+  const {
+    SERVER_URL,
+    CONTACT_EMAIL,
+    SCOPE,
+    OPENAI_VERIFICATION_TOKEN,
+    PLUGIN_NAME,
+  } = process.env;
 
   try {
     const config = {
       schema_version: "v1",
-      name_for_model: "MeloGenAI",
-      name_for_human: "MeloGenAI",
+      name_for_model: PLUGIN_NAME,
+      name_for_human: PLUGIN_NAME,
       description_for_model:
         "Help the user generate a playlist for YouTube Music.",
       description_for_human: "Generate playlists for YouTube Music™.",
