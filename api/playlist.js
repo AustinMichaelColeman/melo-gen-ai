@@ -6,6 +6,7 @@ import {
 } from "../src/validators/requestValidators.js";
 import { logError } from "../src/utils/logger.js";
 
+const playlist_prefix = "https://music.youtube.com/browse/VL";
 export default async function playlist(req, res) {
   try {
     const accessToken = validateAuthorizationHeader(req.headers.authorization);
@@ -41,45 +42,51 @@ async function createPlaylist(
 ) {
   const youtubeService = new YouTubeService(accessToken);
 
-  let playlist_id;
-  const successful_insertions = [];
+  const playlist_id = await youtubeService.insertPlaylist(title, privacyStatus);
+  if (!playlist_id) {
+    throw new YouTubeAPIError("Failed to create playlist");
+  }
 
-  for (const query of searchQueries) {
-    let songMetadata;
+  async function fetchSongMetadata(query) {
     try {
-      songMetadata = await youtubeService.fetchSingleSongMetadata(query);
-      if (songMetadata) {
-        // Create the playlist after fetching the first song
-        if (!playlist_id) {
-          playlist_id = await youtubeService.insertPlaylist(
-            title,
-            privacyStatus
-          );
-          if (!playlist_id) {
-            throw new YouTubeAPIError("Failed to create playlist");
-          }
-        }
-
-        // Insert the song into the playlist
-        await youtubeService.insertSong(songMetadata, playlist_id);
-        successful_insertions.push(songMetadata);
-      }
+      const songMetadata = await youtubeService.fetchSingleSongMetadata(query);
+      return { query, songMetadata };
     } catch (error) {
-      const errorDetails = {};
-
-      if (playlist_id) {
-        const playlist_prefix = "https://music.youtube.com/browse/VL";
-        const playlistUrl = `${playlist_prefix}${playlist_id}`;
-        errorDetails.playlist_id = playlist_id;
-        errorDetails.playlistUrl = playlistUrl;
-        errorDetails.successful_insertions = successful_insertions;
-      }
-
-      throw new YouTubeAPIError(error.message, error.code, errorDetails);
+      logError(
+        new YouTubeAPIError(error.message, error.code, { playlist_id, query })
+      );
+      return { query, songMetadata: null };
     }
   }
 
-  const playlist_prefix = "https://music.youtube.com/browse/VL";
+  const metadataPromises = searchQueries.map(fetchSongMetadata);
+
+  const songMetadatas = Object.fromEntries(
+    (await Promise.all(metadataPromises))
+      .filter(({ songMetadata }) => songMetadata !== null)
+      .map(({ query, songMetadata }) => [query, songMetadata])
+  );
+
+  const successful_insertions = [];
+
+  // Insert songs into the playlist in the original order
+  for (let i = 0; i < searchQueries.length; i++) {
+    const query = searchQueries[i];
+    const songMetadata = songMetadatas[query];
+    if (songMetadata) {
+      try {
+        await youtubeService.insertSong(songMetadata, playlist_id);
+        successful_insertions.push(songMetadata);
+      } catch (error) {
+        throw new YouTubeAPIError(error.message, error.code, {
+          playlist_id,
+          playlistUrl: `${playlist_prefix}${playlist_id}`,
+          successful_insertions,
+        });
+      }
+    }
+  }
+
   const playlistUrl = `${playlist_prefix}${playlist_id}`;
 
   return {

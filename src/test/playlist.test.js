@@ -172,6 +172,11 @@ describe("createPlaylist", () => {
         id: "456",
         title: "Test Title 2",
         query: "Test Query 2",
+      })
+      .mockResolvedValueOnce({
+        id: "789",
+        title: "Test Title 3",
+        query: "Test Query 3",
       });
     mockInsertPlaylist.mockResolvedValue("playlist123");
     mockInsertSong
@@ -182,7 +187,7 @@ describe("createPlaylist", () => {
 
     await createPlaylist(req, res);
 
-    expect(mockFetchSingleSongMetadata).toHaveBeenCalledTimes(2);
+    expect(mockFetchSingleSongMetadata).toHaveBeenCalledTimes(3);
     expect(mockInsertSong).toHaveBeenCalledTimes(2);
     expect(res.status).toHaveBeenCalledWith(429);
     expect(res.json).toHaveBeenCalledWith({
@@ -193,6 +198,42 @@ describe("createPlaylist", () => {
         { id: "123", title: "Test Title 1", query: "Test Query 1" },
       ],
     });
+  });
+
+  it("maintains the order of the songs", async () => {
+    mockFetchSingleSongMetadata.mockImplementation((query) => {
+      switch (query) {
+        case "Test Query 1":
+          return Promise.resolve({ id: "123", title: "Test Title 1", query });
+        case "Test Query 2":
+          return Promise.resolve({ id: "456", title: "Test Title 2", query });
+        case "Test Query 3":
+          return Promise.resolve({ id: "789", title: "Test Title 3", query });
+        default:
+          return Promise.resolve(null);
+      }
+    });
+
+    mockInsertPlaylist.mockResolvedValue("playlist123");
+    mockInsertSong.mockResolvedValue();
+    req.body.searchQueries = ["Test Query 1", "Test Query 2", "Test Query 3"];
+
+    await createPlaylist(req, res);
+
+    expect(mockInsertSong.mock.calls).toEqual([
+      [
+        { id: "123", title: "Test Title 1", query: "Test Query 1" },
+        "playlist123",
+      ],
+      [
+        { id: "456", title: "Test Title 2", query: "Test Query 2" },
+        "playlist123",
+      ],
+      [
+        { id: "789", title: "Test Title 3", query: "Test Query 3" },
+        "playlist123",
+      ],
+    ]);
   });
 
   const scenarios = [["private"], ["public"], ["unlisted"]];
