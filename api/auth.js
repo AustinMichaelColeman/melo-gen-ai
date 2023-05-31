@@ -14,7 +14,18 @@ export default function auth(req, res) {
 
     res.redirect(`${AUTH_PROVIDER_URL}?${params.toString()}`);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to redirect to authorization URL" });
+    console.error(
+      "Auth Request Error:",
+      error.name,
+      error.message,
+      "Status:",
+      error.response?.status,
+      error.response?.statusText
+    );
+
+    const errorCode = error.response?.status || 500;
+    res
+      .status(errorCode)
+      .json({ error: "An error occurred while processing your request." });
   }
 }
