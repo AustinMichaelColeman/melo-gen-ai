@@ -2,6 +2,12 @@
 
 MeloGenAI is a playlist generator plugin for ChatGPT and for YouTube Music™.
 
+## Features
+
+- Generates playlists for YouTube Music using the YouTube Data API.
+- Adds the first search result of each song to the playlist.
+- Sets generated playlist as public, private, or unlisted based on user preference. Defaults to public.
+
 ## Example
 
 ![image](https://github.com/AustinMichaelColeman/melo-gen-ai/assets/12992271/4e4fe260-95f9-407c-9369-8b1c9a01ede8)
