@@ -1,0 +1,77 @@
+name: Auto PR from preview to main
+
+on:
+  push:
+    branches:
+      - preview
+
+jobs:
+  create_pull_request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Install GitHub API package
+        run: npm install @octokit/rest
+
+      - name: Close old Pull Requests
+        run: |
+          node <<EOF
+          const { Octokit } = require("@octokit/rest");
+          const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+          octokit.pulls.list({
+            owner: '${{ github.repository_owner }}',
+            repo: '${{ github.event.repository.name }}',
+            state: 'open',
+            base: 'main',
+            head: '${{ github.repository_owner }}:preview',
+          }).then(({ data }) => {
+            data.forEach(pull => {
+              octokit.pulls.update({
+                owner: '${{ github.repository_owner }}',
+                repo: '${{ github.event.repository.name }}',
+                pull_number: pull.number,
+                state: 'closed',
+              });
+            });
+          });
+          EOF
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get commit list
+        id: get_commits
+        run: |
+          node <<EOF
+          const { Octokit } = require("@octokit/rest");
+          const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+          octokit.repos.compareCommits({
+            owner: '${{ github.repository_owner }}',
+            repo: '${{ github.event.repository.name }}',
+            base: 'main',
+            head: 'preview',
+          }).then(({ data }) => {
+            const commitMessages = data.commits.map(commit => `- [${commit.commit.message}](${commit.html_url})`).join('\n');
+            console.log(`::set-output name=commit_list::${commitMessages}`);
+          });
+          EOF
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: "preview"
+          title: "Automated PR from preview to main"
+          body: "This is an auto-generated PR with updates from the preview branch. Here is a list of commits included in this PR:\n${{ steps.get_commits.outputs.commit_list }}"
+          base: "main"
+          labels: "automated-pr"
