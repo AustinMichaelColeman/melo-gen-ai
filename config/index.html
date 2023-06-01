@@ -62,20 +62,12 @@
         <h2>Project Features</h2>
         <ul>
           <li>
-            Generates a playlist on the user's YouTube Music account through the
-            ChatGPT plugin.
+            Generates playlists for YouTube Music using the YouTube Data API.
           </li>
+          <li>Adds the first search result of each song to the playlist.</li>
           <li>
-            Searches YouTube for each song title provided, adding the first
-            returned result to the playlist.
-          </li>
-          <li>
-            Prioritizes user privacy by seeking consent before starting the song
-            search and playlist creation process.
-          </li>
-          <li>
-            Allows the user to specify public, private, or unlisted for their
-            playlist.
+            Sets generated playlist as public, private, or unlisted based on
+            user preference. Defaults to public.
           </li>
         </ul>
         <h2>Example</h2>
@@ -84,11 +76,12 @@
           alt="Example of MeloGenAI playlist generator plugin"
         />
         <p>
-          Here is the playlist it generated:
+          Check out the
           <a
-            href="https://music.youtube.com/playlist?list=PLHue5YJSxY0hkqjMazz_HdagdSQiUF3V_"
-            >https://music.youtube.com/playlist?list=PLHue5YJSxY0hkqjMazz_HdagdSQiUF3V_</a
+            href="https://music.youtube.com/playlist?list=PLHue5YJSxY0idjvqtHa3cRqOeNycFW96t"
+            >Copyright Free Music Playlist</a
           >
+          it generated for YouTube Music.
         </p>
 
         <p>
