@@ -1,6 +1,6 @@
 # melo-gen-ai
 
-MeloGenAI is a playlist generator plugin for ChatGPT and for YouTube Music™.
+MeloGenAI is a playlist generator [plugin for ChatGPT](https://openai.com/blog/chatgpt-plugins) and for YouTube Music™.
 
 ## Features
 
