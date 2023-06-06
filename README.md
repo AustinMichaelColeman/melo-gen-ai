@@ -14,6 +14,8 @@ MeloGenAI is a playlist generator [plugin for ChatGPT](https://openai.com/blog/c
 
 Check out the [Copyright Free Music Playlist](https://music.youtube.com/browse/VLPLHue5YJSxY0idjvqtHa3cRqOeNycFW96t) it generated for YouTube Music.
 
+Here is a [Youtube video example](https://www.youtube.com/watch?v=8pOSu8AR8j0) as well.
+
 ## Configuration
 
 This project is deployed using [Vercel Serverless Functions](https://vercel.com/docs/concepts/functions/serverless-functions) and uses [Google Cloud](https://console.cloud.google.com/) for auth. If you are trying to fork this project, this information may be helpful:
