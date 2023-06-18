@@ -20,17 +20,6 @@ Here is a [Youtube video example](https://www.youtube.com/watch?v=8pOSu8AR8j0) a
 
 This project is deployed using [Vercel Serverless Functions](https://vercel.com/docs/concepts/functions/serverless-functions) and uses [Google Cloud](https://console.cloud.google.com/) for auth. If you are trying to fork this project, this information may be helpful:
 
-### Environment variables
-
-1. From within Vercel, set these [environment variables](https://vercel.com/docs/concepts/projects/environment-variables):
-   - `SERVER_URL`: Your server URL, such as `app.vercel.com`
-   - `CONTACT_EMAIL`: Your contact email address
-   - `OPENAI_VERIFICATION_TOKEN`: Obtain this token from OpenAI. See the [ChatGPT Plugin OAuth docs](https://platform.openai.com/docs/plugins/authentication/oauth)
-   - `SCOPE`: Enter the scopes you're using from Google API.
-   - `AUTH_PROVIDER_URL`: URL for the authentication provider (e.g., `https://accounts.google.com/o/oauth2/v2/auth`)
-   - `TOKEN_PROVIDER_URL`: URL for the token provider (e.g., `https://oauth2.googleapis.com/token`)
-   - `PLUGIN_NAME`: The name of the plugin. I do this so that way my preview deploys show up as "MeloGenAI Preview" and "MeloGenAI" in the plugin store while I develop it.
-
 ### Google Cloud console
 
 You will need a client id and secret from Google Cloud.
