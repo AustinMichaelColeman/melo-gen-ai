@@ -16,19 +16,6 @@ Check out the [Copyright Free Music Playlist](https://music.youtube.com/browse/V
 
 Here is a [Youtube video example](https://www.youtube.com/watch?v=8pOSu8AR8j0) as well.
 
-## Configuration
-
-This project is deployed using [Vercel Serverless Functions](https://vercel.com/docs/concepts/functions/serverless-functions) and uses [Google Cloud](https://console.cloud.google.com/) for auth. If you are trying to fork this project, this information may be helpful:
-
-### Google Cloud console
-
-You will need a client id and secret from Google Cloud.
-
-Authorized redirect URI: https://chat.openai.com/aip/YOUR_PLUGIN_ID/oauth/callback (replace **YOUR_PLUGIN_ID** with the ID of your plugin)
-Authorized JavaScript origins: Your server URL, such as `app.vercel.com`
-
-See the [ChatGPT Plugin OAuth docs](https://platform.openai.com/docs/plugins/authentication/oauth) for more info about obtaining a plugin ID
-
 ## Use of Trademarks
 
 YouTube Music is a trademark of Google Inc. Use of this trademark is subject to [Google Permissions](https://about.google/brand-resource-center/).
