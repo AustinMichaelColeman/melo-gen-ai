@@ -16,6 +16,8 @@ Check out the [Copyright Free Music Playlist](https://music.youtube.com/browse/V
 
 Here is a [Youtube video example](https://www.youtube.com/watch?v=8pOSu8AR8j0) as well.
 
+Note that this project is unfinished and out of date. It worked at the time of creaiton, but since then OpenAI has changed to use GPTs rather than plugins. Perhaps I'll transition this to use the GPT API when I get around to it and then finish the project.
+
 ## Use of Trademarks
 
 YouTube Music is a trademark of Google Inc. Use of this trademark is subject to [Google Permissions](https://about.google/brand-resource-center/).
